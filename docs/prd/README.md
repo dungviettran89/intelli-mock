@@ -127,7 +127,9 @@ Intelli-Mock allows different teams to mock API endpoints with AI assistance on 
 
 ### NFR-1: Multi-Tenant
 - All data scoped by tenant, no cross-tenant data leakage
-- Single instance serves unlimited teams
+- Single instance serves unlimited teams via logical isolation
+- Tenant resolution pipeline: JWT claim → TenantResolver → Service-layer scoping
+- See [`DATABASE.md`](./DATABASE.md#multi-tenant-jwt-isolation-model) for full JWT isolation model
 
 ### NFR-2: Database
 - **Dev:** sql.js (SQLite in-memory, zero setup)
@@ -138,6 +140,8 @@ Intelli-Mock allows different teams to mock API endpoints with AI assistance on 
 - vm2 sandbox: no `require('fs')`, `require('child_process')`, or OS access
 - Allowlisted built-in modules only in sandbox
 - JWT verification on all routes
+- Database-level constraints: `isActive` trigger (MariaDB), tenant-scoped queries
+- See [`DATABASE.md`](./DATABASE.md#9-security-considerations) for full security checklist
 
 ### NFR-4: Performance
 - Route matching: O(log n) via sorted path index
@@ -268,18 +272,31 @@ JWT Auth → Find longest match → Proxy to upstream → (on fail) fall back to
 
 | Entity | Purpose |
 |---|---|
-| **Tenant** | Team/workspace namespace (from JWT) |
+| **Tenant** | Team/workspace namespace (from JWT `tenant` claim) |
 | **MockEndpoint** | Endpoint config: path, method, proxy URL, status, prompt |
 | **SamplePair** | Request/response example pairs (≥5 to generate) |
 | **MockScript** | AI-generated JS code, versioned, one active at a time |
 | **TrafficLog** | Captured traffic with 30-day retention |
 | **User** | Minimal record, identity from JWT `sub` claim |
 
+### Entity Relationships
+
+```
+Tenant (1) ────< (N) MockEndpoint
+                            ├──< (N) SamplePair        (CASCADE delete)
+                            ├──< (N) MockScript        (CASCADE delete)
+                            └──< (N) TrafficLog        (SET NULL on delete)
+
+Tenant (1) ────< (N) User                             (CASCADE delete)
+```
+
 ### Status Flow
 
 ```
 MockEndpoint: draft → ready → active → deactivated
 ```
+
+> **Full schema with types, relationships, indexes, constraints, cascade rules, and JWT isolation model:** [`DATABASE.md`](./DATABASE.md)
 
 ---
 
@@ -345,6 +362,7 @@ TRAFFIC_RETENTION_DAYS=30
 
 ## Appendix
 
+- **Database schema:** `./DATABASE.md`
 - **Full architecture:** `./ARCHITECTURE.md`
 - **Git repo:** `~/projects/intelli-mock`
 - **Created:** 2026-04-06

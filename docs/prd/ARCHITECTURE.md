@@ -116,56 +116,92 @@ Every mock definition (e.g., `/test`) exposes two endpoints:
 │              │     │                  │     │                     │
 │ - id (pk)    │     │ - id (pk)        │     │ - id (pk)           │
 │ - name       │     │ - tenant_id (fk) │     │ - endpoint_id (fk)  │
-│ - slug       │     │ - path_pattern   │     │ - request_data      │
-└──────────────┘     │ - method         │     │ - response_data     │
-                     │ - is_active      │     │ - timestamp         │
-                     │ - proxy_url      │     └─────────────────────┘
+│ - slug       │     │ - path_pattern   │     │ - source (enum)     │
+└──────────────┘     │ - method (enum)  │     │ - request (json)    │
+                     │ - proxy_url      │     │ - response (json)   │
+                     │ - status (enum)  │     │ - created_at        │
+                     │ - prompt_extra   │     └─────────────────────┘
                      │ - priority       │
-                     │ - ai_prompt      │     ┌─────────────────────┐
-                     │ - prompt_extra   │     │   MockScript        │
-                     │ - status         │     │                     │
-                     └──────────────────┘     │ - id (pk)           │
-                            │                 │ - endpoint_id (fk)  │
-                            │                 │ - script_code       │
-                     ┌──────▼──────┐          │ - version           │
-                     │ TrafficLog  │          │ - ai_model_used     │
-                     │             │          │ - created_at        │
-                     │ - id (pk)   │          │ - is_active         │
-                     │ - endpoint  │          └─────────────────────┘
-                     │   _id (fk)  │
-                     │ - method    │     ┌─────────────────────┐
-                     │ - path      │     │   User              │
-                     │ - request   │     │                     │
-                     │ - response  │     │ - id (from JWT)     │
-                     │ - status    │     │ - sub               │
-                     │ - latency   │     │ - roles             │
-                     │ - is_proxy  │     │ - tenant_id (fk)    │
-                     │ - timestamp │     └─────────────────────┘
-                     └─────────────┘
+                     └────────┬─────────┘     ┌─────────────────────┐
+                              │               │   MockScript        │
+                     ┌────────▼─────────┐     │                     │
+                     │   TrafficLog     │     │ - id (pk)           │
+                     │                  │     │ - endpoint_id (fk)  │
+                     │ - id (pk)        │     │ - version           │
+                     │ - endpoint_id    │     │ - code (text)       │
+                     │   (fk, nullable) │     │ - ai_model          │
+                     │ - route          │     │ - ai_prompt         │
+                     │ - method         │     │ - is_active (bool)  │
+                     │ - path           │     │ - validation_error  │
+                     │ - request (json) │     │ - created_at        │
+                     │ - response (json)│     └─────────────────────┘
+                     │ - source (enum)  │
+                     │ - created_at     │     ┌─────────────────────┐
+                     └──────────────────┘     │   User              │
+                                              │                     │
+                                              │ - id (pk)           │
+                                              │ - tenant_id (fk)    │
+                                              │ - sub               │
+                                              │ - email (nullable)  │
+                                              │ - roles (json)      │
+                                              │ - last_seen_at      │
+                                              │ - created_at        │
+                                              │ - updated_at        │
+                                              └─────────────────────┘
 ```
 
 ### Entity Details
 
 **Tenant** — Team/workspace namespace. All mocks belong to a tenant. Extracted from JWT claims.
+- `slug`: URL-safe unique identifier, auto-generated or user-specified
+- See `DATABASE.md` for full schema
 
 **MockEndpoint** — A single API endpoint configuration.
-- `path_pattern`: Express-style route pattern (supports `:param` and `*` wildcard)
-- `method`: HTTP method (GET, POST, PUT, PATCH, DELETE, ANY)
-- `proxy_url`: Upstream URL for proxy mode (null if no proxy)
-- `status`: `draft` | `ready` | `active`
-- `prompt_extra`: User-supplied AI guidance
+- `pathPattern`: Express-style route pattern (supports `:param` and `*` wildcard)
+- `method`: HTTP method enum — `GET` | `POST` | `PUT` | `PATCH` | `DELETE` | `HEAD` | `OPTIONS` | `ANY`
+- `proxyUrl`: Upstream URL for proxy mode (null if no proxy)
+- `status`: `draft` | `ready` | `active` | `deactivated`
+  - `draft`: Initial state, not yet routable
+  - `ready`: Has 5+ samples, can be activated
+  - `active`: Live, serving requests
+  - `deactivated`: Previously active, now disabled
+- `promptExtra`: User-supplied AI guidance
+- `priority`: Override for longest-match tiebreaker (default 0)
+- See `DATABASE.md` for full schema
 
 **SamplePair** — Request/response example pairs provided by user or captured from proxy
+- `source`: `manual` (user-provided) | `proxy` (auto-captured)
+- `request`: JSON — `{ method, path, params?, query?, headers?, body? }`
+- `response`: JSON — `{ status, headers?, body, latency? }`
 - AI only generates a script once `count >= 5`
+- See `DATABASE.md` for full schema
 
 **MockScript** — AI-generated JavaScript code for mock execution
-- Versioned (v1, v2, ...) for future rollback capability
-- `is_active`: Which version is currently used for evaluation
+- `version`: Auto-incrementing version number per endpoint (starts at 1)
+- `code`: Full JavaScript source code
+- `aiModel`: Model identifier used for generation (e.g., `gpt-4o`)
+- `aiPrompt`: Prompt used (for debugging/reproducibility)
+- `isActive`: Which version is currently used for evaluation (only one per endpoint)
+- `validationError`: Syntax error message if validation failed
+- See `DATABASE.md` for full schema
 
-**TrafficLog** — Captured request/response with 1-month auto-cleanup
-- `is_proxy`: Whether this was from proxy pass-through (true) or direct mock (false)
+**TrafficLog** — Captured request/response with configurable auto-cleanup
+- `route`: Matched route pattern (preserved after endpoint deletion)
+- `source`: `mock` (direct) | `proxy` (pass-through) | `fallback` (auto-endpoint fallback)
+- `request`: JSON — `{ params?, query?, headers?, body? }`
+- `response`: JSON — `{ status, headers?, body?, latency }`
+- FK to MockEndpoint uses `SET NULL` on delete (preserves traffic history)
+- See `DATABASE.md` for full schema
 
 **User** — Minimal storage, primary identity from JWT `sub` claim
+- `sub`: JWT subject claim (upstream identity)
+- `email`: Optional, from JWT if available
+- `roles`: JSON array, defaults to `["user"]`
+- `lastSeenAt`: Updated on every authenticated request
+- Auto-created on first JWT encounter (upsert by `tenantId` + `sub`)
+- See `DATABASE.md` for full schema
+
+> **Complete schema with SQL DDL, indexes, constraints, cascade rules, and query patterns:** [`DATABASE.md`](./DATABASE.md)
 
 ---
 
@@ -468,10 +504,14 @@ CORS_ORIGINS=http://localhost:5173
 
 ## 12. Multi-Tenant Design
 
-- Tenant identity extracted from JWT `tenant` claim
-- All queries scoped by `tenant_id`
+- Tenant identity extracted from JWT `tenant` claim (maps to `tenants.slug`)
+- All queries scoped by `tenant_id` at service layer
 - Route matching prioritizes longest path within tenant scope
 - One instance serves unlimited teams via logical isolation
+- **Tenant Resolution Pipeline:** JWT → TenantResolver (upsert by slug) → User upsert (by sub) → Service queries with `tenantId`
+- **No cross-tenant data leakage:** Every repository query includes `where: { tenantId }`
+
+> **Full JWT isolation model with claim schema and edge cases:** [`DATABASE.md`](./DATABASE.md#multi-tenant-jwt-isolation-model)
 
 ---
 
@@ -493,11 +533,12 @@ CORS_ORIGINS=http://localhost:5173
 ## 14. Implementation Phases
 
 ### Phase 1: Foundation (core infrastructure)
-- TypeORM + dual DB support (sql.js/MariaDB)
+- TypeORM + dual DB support (sql.js/MariaDB) with cross-driver compatibility layer
 - tsyringe DI container
 - Express setup with error handling
-- JWT auth middleware
-- Entity models
+- JWT auth middleware + TenantResolver service
+- Entity models (6 entities: Tenant, MockEndpoint, SamplePair, MockScript, TrafficLog, User)
+- Database migrations (initial schema + triggers for MariaDB)
 
 ### Phase 2: Mock CRUD + Matching
 - REST API for mock endpoint management
@@ -533,3 +574,10 @@ CORS_ORIGINS=http://localhost:5173
 - Traffic log retention cron
 - Docker image
 - CI/CD pipeline
+
+---
+
+## Appendix
+
+- **Database schema:** [`DATABASE.md`](./DATABASE.md) — Full TypeORM entity definitions, SQL DDL, migration strategy, query patterns, JWT isolation model, cross-driver compatibility, security checklist, performance guidelines
+- **PRD:** [`README.md`](./README.md) — Product requirements, use cases, functional/non-functional requirements
