@@ -155,6 +155,7 @@ Intelli-Mock allows different teams to mock API endpoints with AI assistance on 
 
 | Layer | Technology |
 |---|---|
+| Package Manager | pnpm (pnpm workspaces) |
 | Language | TypeScript (strict mode) |
 | DI | tsyringe |
 | Backend | Express + Express Router |
@@ -168,6 +169,54 @@ Intelli-Mock allows different teams to mock API endpoints with AI assistance on 
 | Code Editing | CodeMirror 6 |
 | API Docs | Swagger / OpenAPI 3.0 |
 | Bundling | Vite (UI) |
+| CLI | Commander.js |
+
+### Monorepo Structure
+
+```
+intelli-mock/                        # Root (pnpm workspace)
+├── packages/
+│   ├── intelli-mock-core/           # Core library — server, entities, modules, services
+│   │   ├── package.json             # Name: @intelli-mock/core
+│   │   ├── src/
+│   │   │   ├── app.ts               # Express app factory
+│   │   │   ├── server.ts            # Server runner
+│   │   │   ├── index.ts             # Public API exports
+│   │   │   └── ...
+│   └── intelli-mock-ui/             # Thin UI — Lit + Material Web
+│       ├── package.json             # Name: @intelli-mock/ui
+│       ├── src/
+│       │   └── ...
+│       └── dist/                    # Built static assets (bundled by Vite)
+├── apps/
+│   └── intelli-mock/                # CLI application — combines core + UI
+│       ├── package.json             # Name: intelli-mock (CLI entry point)
+│       └── src/
+│           └── cli.ts               # Commander CLI interface
+└── docs/
+    └── prd/
+        ├── README.md                # This PRD
+        └── ARCHITECTURE.md          # Architecture document
+```
+
+### Package Roles
+
+**`@intelli-mock/core`** (library)
+- Express application factory
+- All business logic: mocks, samples, AI, proxy, traffic, auth
+- TypeORM entities + migrations
+- Returns configured Express app instance — caller decides how to start it
+
+**`@intelli-mock/ui`** (library)
+- Lit Element + Material Web components
+- Built as static assets via Vite
+- Served by core's static middleware or standalone
+
+**`intelli-mock`** (CLI application)
+- Commander.js interface: `intelli-mock start`, `intelli-mock init`, etc.
+- Pulls in `@intelli-mock/core` and `@intelli-mock/ui`
+- Provides default configuration + reads config file (YAML/JSON)
+- Entry point for end users
 
 ### Request Processing Pipeline
 

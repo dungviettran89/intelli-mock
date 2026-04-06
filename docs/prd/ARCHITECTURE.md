@@ -331,81 +331,105 @@ return {
 
 ## 10. Project Structure
 
+This is a pnpm monorepo with three packages:
+
 ```
-intelli-mock/
-├── src/
-│   ├── app.ts                    # Express app setup
-│   ├── server.ts                 # Entry point
-│   ├── container.ts              # tsyringe root container
-│   ├── config/
-│   │   ├── env.ts               # Environment variables
-│   │   └── database.ts          # TypeORM configuration
-│   ├── core/
-│   │   ├── auth/
-│   │   │   ├── jwt.middleware.ts
-│   │   │   └── user-resolver.ts
-│   │   ├── matching/
-│   │   │   └── route-matcher.ts  # Longest-match router
-│   │   └── logging/
-│   │       ├── traffic-logger.ts
-│   │       └── retention-cron.ts
-│   ├── modules/
-│   │   ├── mock/
-│   │   │   ├── mock.controller.ts
-│   │   │   ├── mock.service.ts
-│   │   │   ├── mock.routes.ts
-│   │   │   └── mock.handler.ts   # Request handler for /_it/
-│   │   ├── sample/
-│   │   │   ├── sample.controller.ts
-│   │   │   └── sample.service.ts
-│   │   ├── script/
-│   │   │   ├── script.service.ts
-│   │   │   ├── script.runner.ts  # vm2 execution
-│   │   │   └── script.validator.ts
-│   │   ├── ai/
-│   │   │   ├── ai.service.ts
-│   │   │   └── prompts.ts
-│   │   ├── traffic/
-│   │   │   ├── traffic.controller.ts
-│   │   │   └── traffic.service.ts
-│   │   └── proxy/
-│   │       └── proxy.service.ts  # HTTP forwarding
-│   ├── entities/
-│   │   ├── tenant.entity.ts
-│   │   ├── mock-endpoint.entity.ts
-│   │   ├── sample-pair.entity.ts
-│   │   ├── mock-script.entity.ts
-│   │   ├── traffic-log.entity.ts
-│   │   └── user.entity.ts
-│   ├── database/
-│   │   ├── data-source.ts
-│   │   ├── migrations/
-│   │   └── seeds/
-│   └── utils/
-│       ├── sandbox.ts            # vm2 setup
-│       └── validation.ts
-├── web/
-│   ├── src/
-│   │   ├── app.ts                # Lit app shell
-│   │   ├── index.html
-│   │   ├── components/
-│   │   │   ├── mock-list.ts
-│   │   │   ├── mock-detail.ts
-│   │   │   ├── sample-editor.ts
-│   │   │   ├── script-editor.ts
-│   │   │   ├── traffic-viewer.ts
-│   │   │   └── try-it.ts
-│   │   └── services/
-│   │       └── api.ts
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts            # Bundled into backend dist
+intelli-mock/                              # Root (pnpm workspace)
+│
+├── packages/
+│   ├── intelli-mock-core/                 # @intelli-mock/core — core library
+│   │   ├── src/
+│   │   │   ├── index.ts                   # Public API exports
+│   │   │   ├── app.ts                     # Express app factory
+│   │   │   ├── server.ts                  # Server runner
+│   │   │   ├── container.ts              # tsyringe root container
+│   │   │   ├── config/
+│   │   │   │   ├── env.ts                # Environment variables
+│   │   │   │   └── database.ts           # TypeORM configuration
+│   │   │   ├── core/
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── jwt.middleware.ts
+│   │   │   │   │   └── user-resolver.ts
+│   │   │   │   ├── matching/
+│   │   │   │   │   └── route-matcher.ts   # Longest-match router
+│   │   │   │   └── logging/
+│   │   │   │       ├── traffic-logger.ts
+│   │   │   │       └── retention-cron.ts
+│   │   │   ├── modules/
+│   │   │   │   ├── mock/
+│   │   │   │   │   ├── mock.controller.ts
+│   │   │   │   │   ├── mock.service.ts
+│   │   │   │   │   ├── mock.routes.ts
+│   │   │   │   │   └── mock.handler.ts    # Request handler for /_it/
+│   │   │   │   ├── sample/
+│   │   │   │   │   ├── sample.controller.ts
+│   │   │   │   │   └── sample.service.ts
+│   │   │   │   ├── script/
+│   │   │   │   │   ├── script.service.ts
+│   │   │   │   │   ├── script.runner.ts   # vm2 execution
+│   │   │   │   │   └── script.validator.ts
+│   │   │   │   ├── ai/
+│   │   │   │   │   ├── ai.service.ts
+│   │   │   │   │   └── prompts.ts
+│   │   │   │   ├── traffic/
+│   │   │   │   │   ├── traffic.controller.ts
+│   │   │   │   │   └── traffic.service.ts
+│   │   │   │   └── proxy/
+│   │   │   │       └── proxy.service.ts   # HTTP forwarding
+│   │   │   ├── entities/
+│   │   │   │   ├── tenant.entity.ts
+│   │   │   │   ├── mock-endpoint.entity.ts
+│   │   │   │   ├── sample-pair.entity.ts
+│   │   │   │   ├── mock-script.entity.ts
+│   │   │   │   ├── traffic-log.entity.ts
+│   │   │   │   └── user.entity.ts
+│   │   │   ├── database/
+│   │   │   │   ├── data-source.ts
+│   │   │   │   ├── migrations/
+│   │   │   │   └── seeds/
+│   │   │   └── utils/
+│   │   │       ├── sandbox.ts             # vm2 setup
+│   │   │       └── validation.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── intelli-mock-ui/                   # @intelli-mock/ui — thin UI
+│       ├── src/
+│       │   ├── index.ts                   # Entry point
+│       │   ├── components/
+│       │   │   ├── mock-list.ts
+│       │   │   ├── mock-detail.ts
+│       │   │   ├── sample-editor.ts
+│       │   │   ├── script-editor.ts
+│       │   │   ├── traffic-viewer.ts
+│       │   │   └── try-it.ts
+│       │   └── services/
+│       │       └── api.ts
+│       ├── package.json
+│       ├── tsconfig.json
+│       └── vite.config.ts                 # Bundles to dist/
+│
+├── apps/
+│   └── intelli-mock/                      # intelli-mock — CLI app
+│       ├── src/
+│       │   ├── cli.ts                     # Commander CLI entry point
+│       │   ├── config.ts                  # Config loader (YAML/JSON)
+│       │   └── commands/
+│       │       ├── start.ts               # `intelli-mock start`
+│       │       └── init.ts                # `intelli-mock init`
+│       ├── package.json
+│       └── tsconfig.json
+│
 ├── test/
 │   ├── integration/
 │   └── unit/
-├── package.json
-├── tsconfig.json
-└── README.md
+├── docs/
+│   └── prd/
+│       ├── README.md                      # PRD
+│       └── ARCHITECTURE.md                # Architecture
+├── pnpm-workspace.yaml
+├── pnpm-lock.yaml
+├── package.json                           # README.md
 ```
 
 ---
