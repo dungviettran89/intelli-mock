@@ -174,47 +174,47 @@ Intelli-Mock allows different teams to mock API endpoints with AI assistance on 
 ### Monorepo Structure
 
 ```
-intelli-mock/                        # Root (pnpm workspace)
+intelli-mock/                          # Root (pnpm workspace)
 ├── packages/
-│   ├── intelli-mock-core/           # Core library — server, entities, modules, services
-│   │   ├── package.json             # Name: @intelli-mock/core
+│   ├── intellij-mock-core/            # Core library — server, entities, modules, services
+│   │   ├── package.json               # Name: @intellij-mock/core
 │   │   ├── src/
-│   │   │   ├── app.ts               # Express app factory
-│   │   │   ├── server.ts            # Server runner
-│   │   │   ├── index.ts             # Public API exports
+│   │   │   ├── app.ts                 # Express app factory
+│   │   │   ├── server.ts              # Server runner
+│   │   │   ├── index.ts               # Public API exports
 │   │   │   └── ...
-│   └── intelli-mock-ui/             # Thin UI — Lit + Material Web
-│       ├── package.json             # Name: @intelli-mock/ui
+│   └── intellij-mock-ui/              # Thin UI — Lit + Material Web
+│       ├── package.json               # Name: @intellij-mock/ui
 │       ├── src/
 │       │   └── ...
-│       └── dist/                    # Built static assets (bundled by Vite)
+│       └── dist/                      # Built static assets (bundled by Vite)
 ├── apps/
-│   └── intelli-mock/                # CLI application — combines core + UI
-│       ├── package.json             # Name: intelli-mock (CLI entry point)
+│   └── intellij-mock/                 # CLI app — combines core + UI + config
+│       ├── package.json               # Name: intellij-mock (CLI entry point)
 │       └── src/
-│           └── cli.ts               # Commander CLI interface
+│           └── cli.ts                 # Commander CLI interface
 └── docs/
     └── prd/
-        ├── README.md                # This PRD
-        └── ARCHITECTURE.md          # Architecture document
+        ├── README.md                  # This PRD
+        └── ARCHITECTURE.md            # Architecture document
 ```
 
 ### Package Roles
 
-**`@intelli-mock/core`** (library)
+**`@intellij-mock/core`** (library)
 - Express application factory
 - All business logic: mocks, samples, AI, proxy, traffic, auth
 - TypeORM entities + migrations
 - Returns configured Express app instance — caller decides how to start it
 
-**`@intelli-mock/ui`** (library)
+**`@intellij-mock/ui`** (library)
 - Lit Element + Material Web components
 - Built as static assets via Vite
 - Served by core's static middleware or standalone
 
-**`intelli-mock`** (CLI application)
-- Commander.js interface: `intelli-mock start`, `intelli-mock init`, etc.
-- Pulls in `@intelli-mock/core` and `@intelli-mock/ui`
+**`intellij-mock`** (CLI application)
+- Commander.js interface: `intellij-mock start`, `intellij-mock init`, etc.
+- Pulls in `@intellij-mock/core` and `@intellij-mock/ui`
 - Provides default configuration + reads config file (YAML/JSON)
 - Entry point for end users
 
@@ -345,7 +345,7 @@ TRAFFIC_RETENTION_DAYS=30
 
 ## Appendix
 
-- **Full architecture:** `../ARCHITECTURE.md`
+- **Full architecture:** `./ARCHITECTURE.md`
 - **Git repo:** `~/projects/intelli-mock`
 - **Created:** 2026-04-06
 - **Author:** Dung Tran
