@@ -176,21 +176,21 @@ Intelli-Mock allows different teams to mock API endpoints with AI assistance on 
 ```
 intelli-mock/                          # Root (pnpm workspace)
 ├── packages/
-│   ├── intellij-mock-core/            # Core library — server, entities, modules, services
-│   │   ├── package.json               # Name: @intellij-mock/core
+│   ├── intelli-mock-core/            # Core library — server, entities, modules, services
+│   │   ├── package.json               # Name: @intelli-mock/core
 │   │   ├── src/
 │   │   │   ├── app.ts                 # Express app factory
 │   │   │   ├── server.ts              # Server runner
 │   │   │   ├── index.ts               # Public API exports
 │   │   │   └── ...
-│   └── intellij-mock-ui/              # Thin UI — Lit + Material Web
-│       ├── package.json               # Name: @intellij-mock/ui
+│   └── intelli-mock-ui/              # Thin UI — Lit + Material Web
+│       ├── package.json               # Name: @intelli-mock/ui
 │       ├── src/
 │       │   └── ...
 │       └── dist/                      # Built static assets (bundled by Vite)
 ├── apps/
-│   └── intellij-mock/                 # CLI app — combines core + UI + config
-│       ├── package.json               # Name: intellij-mock (CLI entry point)
+│   └── intelli-mock/                 # CLI app — combines core + UI + config
+│       ├── package.json               # Name: intelli-mock (CLI entry point)
 │       └── src/
 │           └── cli.ts                 # Commander CLI interface
 └── docs/
@@ -201,20 +201,20 @@ intelli-mock/                          # Root (pnpm workspace)
 
 ### Package Roles
 
-**`@intellij-mock/core`** (library)
+**`@intelli-mock/core`** (library)
 - Express application factory
 - All business logic: mocks, samples, AI, proxy, traffic, auth
 - TypeORM entities + migrations
 - Returns configured Express app instance — caller decides how to start it
 
-**`@intellij-mock/ui`** (library)
+**`@intelli-mock/ui`** (library)
 - Lit Element + Material Web components
 - Built as static assets via Vite
 - Served by core's static middleware or standalone
 
-**`intellij-mock`** (CLI application)
-- Commander.js interface: `intellij-mock start`, `intellij-mock init`, etc.
-- Pulls in `@intellij-mock/core` and `@intellij-mock/ui`
+**`intelli-mock`** (CLI application)
+- Commander.js interface: `intelli-mock start`, `intelli-mock init`, etc.
+- Pulls in `@intelli-mock/core` and `@intelli-mock/ui`
 - Provides default configuration + reads config file (YAML/JSON)
 - Entry point for end users
 
