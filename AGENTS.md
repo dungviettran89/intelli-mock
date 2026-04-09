@@ -19,6 +19,7 @@
 - TypeORM (sql.js dev / MariaDB prod)
 - Vercel AI SDK (`ai`) — OpenAI-compatible
 - vm2 sandbox for mock script execution
+- Vitest + supertest — 100% offline, fully mocked unit tests
 - Lit Element + `@material/web` for UI
 - Commander.js for CLI
 
@@ -28,8 +29,11 @@ All project docs live in `docs/`:
 
 | File | Purpose |
 |---|---|
-| `docs/prd/README.md` | Product Requirements Document — use cases, functional/non-functional requirements, domain model, tech stack, roadmap |
-| `docs/prd/ARCHITECTURE.md` | Architecture document — system design, endpoint pipelines, domain model, API spec, vm2 sandbox API, project structure |
+| `docs/PRD.md` | Product Requirements Document — goals, requirements, user stories, milestones |
+| `docs/ARCHITECT.md` | Architecture document — system design, endpoint pipelines, domain model, tech stack, project structure |
+| `docs/TESTING.md` | Testing architecture — offline-first unit tests, mocking strategies, Vitest config, coverage thresholds |
+| `docs/DATABASE.md` | Database schema, TypeORM config, migrations |
+| `docs/API.md` | API endpoint specifications |
 
 ## Red Lines
 

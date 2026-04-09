@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import express, { Application } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import { initializeDataSource } from './database/data-source';
 import { configureContainer, getAuthMiddleware } from './container';
 import { getConfig } from './config/env';
@@ -20,6 +20,27 @@ export async function createApp(): Promise<Application> {
   // Load and validate config (throws on missing required values)
   const config = getConfig();
 
+  // CORS middleware — handle preflight and allowed origins
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const origin = req.headers.origin;
+    if (origin && config.security.corsOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+      res.header(
+        'Access-Control-Allow-Headers',
+        config.security.allowedHeaders.join(','),
+      );
+      res.header('Access-Control-Allow-Credentials', 'true');
+    }
+
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(204);
+      return;
+    }
+
+    next();
+  });
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
@@ -29,4 +50,19 @@ export async function createApp(): Promise<Application> {
   console.log(`[Config] Server on port ${config.server.port}, env: ${config.server.nodeEnv}`);
 
   return app;
+}
+
+/**
+ * Attaches global error-handling middleware to the Express app.
+ * Must be called after all routes are registered.
+ */
+export function attachErrorHandler(app: Application): void {
+  // Global error-handling middleware — catches unhandled exceptions
+  app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
+    console.error('[Error] Unhandled exception:', err);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    });
+  });
 }

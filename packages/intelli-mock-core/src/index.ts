@@ -1,5 +1,8 @@
 // App
-export { createApp } from './app';
+export { createApp, attachErrorHandler } from './app';
+
+// Server
+export { startServer, stopServer } from './server';
 
 // Database
 export {
@@ -7,6 +10,7 @@ export {
   getDataSource,
   closeDataSource,
 } from './database/data-source';
+export { default as AppDataSource } from './database/data-source.config';
 
 // Entities
 export { Tenant } from './entities/tenant.entity';

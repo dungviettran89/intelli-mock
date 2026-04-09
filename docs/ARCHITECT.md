@@ -68,6 +68,9 @@ AI-powered API mocking platform for teams. Users provide sample requests/respons
 | **Code Editing** | CodeMirror 6 | Syntax-highlighted mock script editor |
 | **Web UI** | Lit Element + `@material/web` | Material 3 web components, thin UI |
 | **API Docs** | Swagger / OpenAPI 3.0 | Served at `/api-docs` |
+| **Testing** | Vitest + supertest | 100% offline, fully mocked unit tests |
+| **Mocking** | Vitest built-in + ts-mockito | Type-safe mocks, vi.mock(), vi.fn() |
+| **Test Data** | @faker-js/faker | Deterministic, seedable fixtures |
 
 ## Monorepo Structure
 
@@ -128,6 +131,16 @@ intelli-mock/                              # Root (pnpm workspace)
 │   │   │   └── utils/
 │   │   │       ├── sandbox.ts             # vm2 setup
 │   │   │       └── validation.ts
+│   │   ├── test/                          # Unit tests (mirrors src/)
+│   │   │   ├── helpers/                   # Test utilities
+│   │   │   │   ├── fixtures.ts            # Entity factories
+│   │   │   │   ├── mock-container.ts      # DI container reset
+│   │   │   │   ├── test-app.ts            # Express app builder
+│   │   │   │   └── jwt-utils.ts           # Offline JWT generation
+│   │   │   ├── setup.ts                   # Global test hooks (env vars)
+│   │   │   ├── vitest.config.ts           # Vitest config
+│   │   │   ├── tsconfig.test.json         # Test TypeScript config
+│   │   │   └── **/*.test.ts               # Test files mirror src/ structure
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
@@ -155,12 +168,15 @@ intelli-mock/                              # Root (pnpm workspace)
 │       │   └── commands/
 │       │       ├── start.ts               # `intelli-mock start`
 │       │       └── init.ts                # `intelli-mock init`
+│       ├── test/                          # CLI unit tests
+│       │   ├── helpers/
+│       │   │   └── cli-runner.ts          # Captures CLI command output
+│       │   ├── vitest.config.ts
+│       │   └── **/*.test.ts
 │       ├── package.json
 │       └── tsconfig.json
 │
-├── test/
-│   ├── integration/
-│   └── unit/
+├── vitest.workspace.ts                    # Root workspace config
 ├── docs/
 ├── pnpm-workspace.yaml
 ├── pnpm-lock.yaml
@@ -327,37 +343,48 @@ interface MockResponse {
 | Longest-match routing | Express-style, intuitive for overlapping paths | First-match, priority-based |
 | TrafficLog SET NULL on endpoint delete | Preserves traffic history for analysis | CASCADE delete |
 | Lit Element + Material Web | Lightweight, standards-based web components | React, Vue |
+| Vitest for testing | Native TypeScript, fast, built-in mocking | Jest (slower, needs ts-jest) |
+| 100% offline tests | CI doesn't depend on external services | Integration tests with real DB |
+| supertest for HTTP | Test Express without real server | Node http.request |
 
 ## Implementation Plan
 
 ### Phase 1: Foundation
-- [ ] TypeORM + dual DB support (sql.js/MariaDB) with cross-driver compatibility layer
-- [ ] tsyringe DI container
-- [ ] Express setup with error handling
-- [ ] JWT auth middleware + TenantResolver service
-- [ ] Entity models (6 entities: Tenant, MockEndpoint, SamplePair, MockScript, TrafficLog, User)
-- [ ] Database migrations (initial schema + triggers for MariaDB)
+- [x] TypeORM + dual DB support (sql.js/MariaDB) with cross-driver compatibility layer
+- [x] tsyringe DI container
+- [x] Express setup with error handling
+- [x] JWT auth middleware + TenantResolver service
+- [x] Entity models (6 entities: Tenant, MockEndpoint, SamplePair, MockScript, TrafficLog, User)
+- [x] Database migrations (initial schema + triggers for MariaDB)
+- [x] Testing architecture documented (`docs/TESTING.md`)
+- [ ] Vitest setup with workspace config
+- [ ] Test helpers: fixtures, mock container, JWT utils, test app
+- [ ] Unit tests for config, entities, auth middleware, user resolver, data source
 
 ### Phase 2: Mock CRUD + Matching
 - [ ] REST API for mock endpoint management
 - [ ] Route matcher (longest match, wildcard support)
 - [ ] Sample management API
+- [ ] Unit tests for route matcher, mock service, mock controller, sample service
 
 ### Phase 3: AI Engine
 - [ ] Vercel AI SDK integration
 - [ ] Prompt engineering for script generation
 - [ ] Script versioning
 - [ ] Syntax validation
+- [ ] Unit tests for AI service (mocked), script service, script validator
 
 ### Phase 4: vm2 Sandbox
 - [ ] Sandboxed script execution
 - [ ] Test/try endpoint
 - [ ] Request/response context injection
+- [ ] Unit tests for script runner, sandbox utils (vm2 mocked)
 
 ### Phase 5: Proxy Module
 - [ ] HTTP forwarding with timeout
 - [ ] Automatic traffic capture
 - [ ] Auto-endpoint implementation (proxy → fallback)
+- [ ] Unit tests for proxy service (HTTP mocked)
 
 ### Phase 6: Web UI
 - [ ] Lit Element + Material Web skeleton
@@ -371,7 +398,7 @@ interface MockResponse {
 - [ ] Swagger/OpenAPI docs
 - [ ] Traffic log retention cron
 - [ ] Docker image
-- [ ] CI/CD pipeline
+- [ ] CI/CD pipeline with GitHub Actions + Codecov
 
 ## Risks & Mitigations
 
