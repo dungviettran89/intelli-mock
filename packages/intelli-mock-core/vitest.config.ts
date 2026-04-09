@@ -28,6 +28,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@intelli-mock/core': path.resolve(__dirname, './src'),
+      // Allow test files to import src with relative paths
+      '@src': path.resolve(__dirname, './src'),
     },
   },
 });

@@ -6,9 +6,9 @@ description: Analyze code state against design docs, propose focused 20-30 minut
 # Plan
 
 ## Instructions
-1. Read `docs/ARCHITECT.md` and `docs/PRD.md` to understand the design
-2. Scan the actual codebase using `grep_search` and `glob` to identify what's implemented vs what's planned
-3. Compare against the Implementation Plan in ARCHITECT.md to see which phases are complete/incomplete
+1. Read `docs/ARCHITECT.md`, `docs/PRD.md`, and `docs/PROGRESS.md` to understand the design and current implementation state
+2. Use `docs/PROGRESS.md` as the primary source of truth for what's implemented vs planned — cross-reference against ARCHITECT.md's Implementation Plan
+3. Scan the actual codebase using `grep_search` and `glob` to verify the progress document is accurate
 4. Scan both `docs/tasks/todo/` and `docs/tasks/done/` folders to determine the correct sequential number for the new task file
    - List all existing TODO files in `docs/tasks/todo/` to find the highest sequential number
    - List all completed task files in `docs/tasks/done/` to account for all previously created tasks
@@ -53,7 +53,7 @@ Brief description of why this task matters and how it fits into the overall plan
 
 ## Examples
 **User Request:** "What should we work on next?"
-**Action:** Analyze ARCHITECT.md implementation plan phases, scan codebase for gaps, propose the highest-priority incomplete phase as a focused 20-30 minute task, create the task document, and summarize it.
+**Action:** Read `docs/PROGRESS.md` for current state, cross-reference with ARCHITECT.md Implementation Plan, scan codebase to verify, propose the highest-priority incomplete phase as a focused 20-30 minute task, create the task document, and summarize it.
 
 **User Request:** "Plan the next task"
-**Action:** Read design docs, scan current code state, identify the next incomplete phase or feature, write a TODO file with clear steps and acceptance criteria, then present the summary.
+**Action:** Read design docs and `docs/PROGRESS.md`, identify the next incomplete phase or feature from the progress table, write a TODO file with clear steps and acceptance criteria, then present the summary.

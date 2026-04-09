@@ -61,3 +61,27 @@ This project has specialized sub-agents. Use the right one for the job:
 - **Default/main** — general questions, coordination
 
 To spawn the architect agent for design work, ask the orchestrator to spawn `architect`.
+
+## Module System
+
+**You MUST use ESM (ECMAScript Module) syntax everywhere.** The project uses Vitest with ESM configuration.
+
+### Rules
+
+- **Always use `import` / `export`** — never use `require()` or `module.exports`
+- **Use `.js` extensions in imports** — even for TypeScript files (e.g., `import { foo } from './bar.js'`)
+- **Use relative paths** — test files import from `../src/...` (not `../../src/...`)
+- **Use `await import()`** for dynamic imports in tests (not `require()`)
+- **Use `vi.mock()`** for mocking — not Jest-style mocking
+
+### Examples
+
+```ts
+// ✅ Correct
+import { Tenant } from '../src/entities/tenant.entity.js';
+import { createApp } from '../src/app.js';
+
+// ❌ Wrong — CommonJS
+const { Tenant } = require('../src/entities/tenant.entity');
+const { createApp } = require('../../src/app');
+```
