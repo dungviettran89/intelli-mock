@@ -38,3 +38,6 @@ export { RouteMatcher, MatchResult } from './core/matching/route-matcher';
 export { MockService, CreateMockEndpointDto, UpdateMockEndpointDto } from './modules/mock/mock.service';
 export { MockController } from './modules/mock/mock.controller';
 export { createMockRouter } from './modules/mock/mock.routes';
+export { MockHandler } from './modules/mock/mock.handler';
+export { TrafficService } from './modules/mock/traffic.service';
+export { TrafficRequest, TrafficResponse } from './entities/traffic-log.entity';

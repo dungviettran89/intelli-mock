@@ -3,6 +3,8 @@ import { TenantResolver } from './core/auth/user-resolver';
 import { RouteMatcher } from './core/matching/route-matcher';
 import { MockService } from './modules/mock/mock.service';
 import { MockController } from './modules/mock/mock.controller';
+import { MockHandler } from './modules/mock/mock.handler';
+import { TrafficService } from './modules/mock/traffic.service';
 import { createAuthMiddleware } from './core/auth/jwt.middleware';
 
 /**
@@ -17,6 +19,8 @@ export function configureContainer() {
   container.registerSingleton(RouteMatcher);
   container.registerSingleton(MockService);
   container.registerSingleton(MockController);
+  container.registerSingleton(TrafficService);
+  container.registerSingleton(MockHandler);
 
   // Factory for auth middleware (depends on TenantResolver instance)
   container.register('AuthMiddleware', {

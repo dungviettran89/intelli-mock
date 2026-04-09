@@ -4,6 +4,8 @@ import { initializeDataSource } from './database/data-source';
 import { configureContainer, getAuthMiddleware } from './container';
 import { getConfig } from './config/env';
 import { createMockRouter } from './modules/mock/mock.routes';
+import { container } from 'tsyringe';
+import { MockHandler } from './modules/mock/mock.handler';
 
 /**
  * Creates and configures an Express application instance.
@@ -50,6 +52,10 @@ export async function createApp(): Promise<Application> {
 
   // API routes — mock endpoint management
   app.use('/api/mocks', createMockRouter());
+
+  // Runtime mock handler — serves mock requests at /_it/mock/*
+  const mockHandler = container.resolve(MockHandler);
+  app.all('/_it/mock/*', (req: Request, res: Response) => mockHandler.handle(req, res));
 
   console.log(`[Config] Server on port ${config.server.port}, env: ${config.server.nodeEnv}`);
 

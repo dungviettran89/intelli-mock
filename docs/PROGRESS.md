@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~26% (Phase 2 nearly complete) |
-| **Current Phase** | Phase 2: Mock CRUD + Matching (nearly done) |
+| **Overall Completion** | ~30% (Phase 2 complete) |
+| **Current Phase** | Phase 2: Mock CRUD + Matching ✅ |
 | **Next Phase** | Phase 2: Sample management API |
-| **Source Files** | 23 implemented / ~20+ planned |
-| **Test Files** | 19 files, 119 tests |
+| **Source Files** | 25 implemented / ~20+ planned |
+| **Test Files** | 21 files, 139 tests |
 | **Active Packages** | 1 of 3 (`@intelli-mock/core` only) |
 
 ---
@@ -78,7 +78,8 @@
 | **Mock service** (CRUD, tenant-scoped) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` (12 tests) | ✅ Done |
 | **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` (9 tests) | ✅ Done |
 | **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
-| **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.integration.test.ts` (6 tests) | 🟡 Integration tests done, runtime pending |
+| **Traffic service** (request/response logging) | `src/modules/mock/traffic.service.ts` | — | ✅ Done |
+| **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` (14 tests)<br>`test/modules/mock/mock.handler.integration.test.ts` (6 tests) | ✅ Done |
 
 ---
 
@@ -92,7 +93,8 @@
 | **Mock service** (CRUD logic) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` | ✅ Done |
 | **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` | ✅ Done |
 | **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
-| **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | — | ⬜ Not Started |
+| **Traffic service** (logging) | `src/modules/mock/traffic.service.ts` | — | ✅ Done |
+| **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` + integration | ✅ Done |
 | **Sample service** (pair management) | `src/modules/sample/sample.service.ts` | `test/modules/sample/sample.service.test.ts` | ⬜ Not Started |
 | **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | — | ⬜ Not Started |
 
@@ -160,7 +162,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | 🟡 Active (Phase 2 nearly done) | 23 | 19 |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | 🟡 Active (Phase 2 complete) | 25 | 21 |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | 🟡 Scaffolded (no commands) | 1 | 0 |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🔴 Does not exist | 0 | 0 |
 
@@ -253,3 +255,4 @@
 | [TODO-005](tasks/done/TODO-2026-04-09-005.md) | 2026-04-09 | Phase 1 Unit Tests (67 tests, 9 files) |
 | [TODO-006](tasks/done/TODO-2026-04-09-006.md) | 2026-04-09 | Route Matcher + Mock Service (25 new tests, 104 total) |
 | [TODO-007](tasks/done/TODO-2026-04-09-007.md) | 2026-04-09 | Mock Controller + Routes (15 new tests, 119 total) |
+| [TODO-008](tasks/done/TODO-2026-04-09-008.md) | 2026-04-09 | Mock Handler Runtime + Traffic Logging (20 new tests, 139 total) |
