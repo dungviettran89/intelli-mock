@@ -3,6 +3,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import { initializeDataSource } from './database/data-source';
 import { configureContainer, getAuthMiddleware } from './container';
 import { getConfig } from './config/env';
+import { createMockRouter } from './modules/mock/mock.routes';
 
 /**
  * Creates and configures an Express application instance.
@@ -46,6 +47,9 @@ export async function createApp(): Promise<Application> {
 
   // Auth middleware — verifies JWT, resolves tenant/user
   app.use(getAuthMiddleware());
+
+  // API routes — mock endpoint management
+  app.use('/api/mocks', createMockRouter());
 
   console.log(`[Config] Server on port ${config.server.port}, env: ${config.server.nodeEnv}`);
 

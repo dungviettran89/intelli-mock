@@ -2,6 +2,7 @@ import { container } from 'tsyringe';
 import { TenantResolver } from './core/auth/user-resolver';
 import { RouteMatcher } from './core/matching/route-matcher';
 import { MockService } from './modules/mock/mock.service';
+import { MockController } from './modules/mock/mock.controller';
 import { createAuthMiddleware } from './core/auth/jwt.middleware';
 
 /**
@@ -15,6 +16,7 @@ export function configureContainer() {
   container.registerSingleton(TenantResolver);
   container.registerSingleton(RouteMatcher);
   container.registerSingleton(MockService);
+  container.registerSingleton(MockController);
 
   // Factory for auth middleware (depends on TenantResolver instance)
   container.register('AuthMiddleware', {

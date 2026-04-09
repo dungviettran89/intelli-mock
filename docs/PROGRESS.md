@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~19% (Phase 1 complete + Phase 2 started) |
-| **Current Phase** | Phase 2: Mock CRUD + Matching (in progress) |
-| **Next Phase** | Phase 2: Mock CRUD + Matching (controller + routes) |
-| **Source Files** | 20 implemented / ~20+ planned |
-| **Test Files** | 17 files, 104 tests |
+| **Overall Completion** | ~26% (Phase 2 nearly complete) |
+| **Current Phase** | Phase 2: Mock CRUD + Matching (nearly done) |
+| **Next Phase** | Phase 2: Sample management API |
+| **Source Files** | 23 implemented / ~20+ planned |
+| **Test Files** | 19 files, 119 tests |
 | **Active Packages** | 1 of 3 (`@intelli-mock/core` only) |
 
 ---
@@ -74,11 +74,11 @@
 
 | Feature | Source File | Tests | Status |
 |---|---|---|---|
-| **Route matcher** (longest match, wildcard, `:param`) | `src/core/matching/route-matcher.ts` | `test/core/matching/route-matcher.test.ts` (13 tests) | ✅ Done |
+| **Route matcher** (longest match, wildcard, `:param`) | `src/core/matching/route-matcher.ts` | `test/core/matching/route-matcher.test.ts` (25 tests) | ✅ Done |
 | **Mock service** (CRUD, tenant-scoped) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` (12 tests) | ✅ Done |
-| Mock controller (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` | ⬜ Not Started |
-| Mock routes (Express router) | `src/modules/mock/mock.routes.ts` | — | ⬜ Not Started |
-| Mock handler (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | — | ⬜ Not Started |
+| **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` (9 tests) | ✅ Done |
+| **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
+| **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.integration.test.ts` (6 tests) | 🟡 Integration tests done, runtime pending |
 
 ---
 
@@ -90,8 +90,8 @@
 |---|---|---|---|
 | **Route matcher** (longest match, wildcard) | `src/core/matching/route-matcher.ts` | `test/core/matching/route-matcher.test.ts` | ✅ Done |
 | **Mock service** (CRUD logic) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` | ✅ Done |
-| **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` | ⬜ Not Started |
-| **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ⬜ Not Started |
+| **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` | ✅ Done |
+| **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
 | **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | — | ⬜ Not Started |
 | **Sample service** (pair management) | `src/modules/sample/sample.service.ts` | `test/modules/sample/sample.service.test.ts` | ⬜ Not Started |
 | **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | — | ⬜ Not Started |
@@ -160,7 +160,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | 🟡 Active (Phase 2 in progress) | 20 | 17 |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | 🟡 Active (Phase 2 nearly done) | 23 | 19 |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | 🟡 Scaffolded (no commands) | 1 | 0 |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🔴 Does not exist | 0 | 0 |
 
@@ -168,7 +168,7 @@
 
 ## Requirements Tracking
 
-### Functional Requirements (9/20 complete)
+### Functional Requirements (10/20 complete)
 
 | # | Requirement | Status |
 |---|---|---|
@@ -180,7 +180,7 @@
 | 6 | Six entity models | ✅ Done |
 | 7 | Database migration system with initial schema | ✅ Done |
 | 8 | Unit testing framework with 100% offline tests | 🟡 Partial (infra done, coverage not enforced) |
-| 9 | REST API for mock endpoint management (CRUD) | 🟡 Partial (service layer done, controller pending) |
+| 9 | REST API for mock endpoint management (CRUD) | ✅ Done |
 | 10 | Route matcher with longest-match algorithm | ✅ Done |
 | 11 | Sample pair management API | ⬜ Not Started |
 | 12 | AI script generation via Vercel AI SDK | ⬜ Not Started |
@@ -252,3 +252,4 @@
 | [TODO-004](tasks/done/TODO-2026-04-09-004.md) | 2026-04-09 | Scaffold Vitest Testing Infrastructure |
 | [TODO-005](tasks/done/TODO-2026-04-09-005.md) | 2026-04-09 | Phase 1 Unit Tests (67 tests, 9 files) |
 | [TODO-006](tasks/done/TODO-2026-04-09-006.md) | 2026-04-09 | Route Matcher + Mock Service (25 new tests, 104 total) |
+| [TODO-007](tasks/done/TODO-2026-04-09-007.md) | 2026-04-09 | Mock Controller + Routes (15 new tests, 119 total) |

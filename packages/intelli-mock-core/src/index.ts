@@ -36,3 +36,5 @@ export { RouteMatcher, MatchResult } from './core/matching/route-matcher';
 
 // Mock module
 export { MockService, CreateMockEndpointDto, UpdateMockEndpointDto } from './modules/mock/mock.service';
+export { MockController } from './modules/mock/mock.controller';
+export { createMockRouter } from './modules/mock/mock.routes';
