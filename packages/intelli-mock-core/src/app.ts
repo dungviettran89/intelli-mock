@@ -4,6 +4,7 @@ import { initializeDataSource } from './database/data-source';
 import { configureContainer, getAuthMiddleware } from './container';
 import { getConfig } from './config/env';
 import { createMockRouter } from './modules/mock/mock.routes';
+import { createSampleRouter } from './modules/sample/sample.routes';
 import { container } from 'tsyringe';
 import { MockHandler } from './modules/mock/mock.handler';
 
@@ -52,6 +53,9 @@ export async function createApp(): Promise<Application> {
 
   // API routes — mock endpoint management
   app.use('/api/mocks', createMockRouter());
+
+  // API routes — sample pair management
+  app.use('/api/samples', createSampleRouter());
 
   // Runtime mock handler — serves mock requests at /_it/mock/*
   const mockHandler = container.resolve(MockHandler);

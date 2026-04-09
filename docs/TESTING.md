@@ -704,7 +704,8 @@ export function createUser(overrides: Partial<User> = {}): User {
 |------------|-----------------|
 | TypeORM / Database | Mocked repositories via `vi.mock()` + `getRepository()` override |
 | JWT Verification | Use HS256 with test secret instead of RS256 with real key |
-| AI / Vercel SDK | `vi.mock('ai')` — return pre-canned responses |
+| AI / Vercel SDK | `vi.mock('ai')` — return pre-canned responses (see AI Service Mocking below) |
+| Ollama Endpoint | No mocking needed — Vercel SDK is mocked, no real HTTP calls to Ollama |
 | HTTP Proxy | `vi.mock()` the proxy service — return mock responses |
 | Filesystem | `vi.mock('fs')` — return in-memory file contents |
 | vm2 Sandbox | `vi.mock('vm2')` — return mock NodeVM that evaluates test code |
@@ -747,11 +748,145 @@ These are the test files to create for the **existing** code:
 | 19 | `test/modules/script/script.service.test.ts` | `src/modules/script/script.service.ts` | Script versioning |
 | 20 | `test/modules/script/script.runner.test.ts` | `src/modules/script/script.runner.ts` | vm2 execution |
 | 21 | `test/modules/script/script.validator.test.ts` | `src/modules/script/script.validator.ts` | Syntax check |
-| 22 | `test/modules/ai/ai.service.test.ts` | `src/modules/ai/ai.service.ts` | Vercel AI SDK |
+| 22 | `test/modules/ai/ai.service.test.ts` | `src/modules/ai/ai.service.ts` | Vercel AI SDK, mocked, see AI Service Mocking section |
 | 23 | `test/modules/traffic/traffic.service.test.ts` | `src/modules/traffic/traffic.service.ts` | Logging |
 | 24 | `test/modules/proxy/proxy.service.test.ts` | `src/modules/proxy/proxy.service.ts` | HTTP forwarding |
 | 25 | `test/utils/sandbox.test.ts` | `src/utils/sandbox.ts` | vm2 setup |
 | 26 | `test/utils/validation.test.ts` | `src/utils/validation.ts` | Validation helpers |
+
+---
+
+## AI Service Mocking
+
+The AI service uses Vercel AI SDK (`ai`) to communicate with OpenAI-compatible endpoints. For unit tests, we mock the SDK to avoid external dependencies — including local Ollama instances.
+
+### Why Mock Vercel AI SDK?
+
+1. **Deterministic tests** — AI responses vary; mocks ensure predictable outputs
+2. **No external dependencies** — tests run without Ollama or cloud AI running
+3. **Faster execution** — no network calls, no model inference delays
+4. **Cost-free** — no token usage, unlimited test runs
+
+### Mocking Strategy
+
+```ts
+// test/modules/ai/ai.service.test.ts
+import { generateText } from 'ai';
+import { vi, describe, beforeEach, it, expect } from 'vitest';
+
+// Mock the entire 'ai' module
+vi.mock('ai', () => ({
+  generateText: vi.fn(),
+  streamText: vi.fn(),
+}));
+
+describe('AIService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should generate mock script from sample pairs', async () => {
+    // Arrange: mock the AI response
+    const mockGeneratedCode = `
+      module.exports = async (req, ctx) => {
+        return {
+          status: 200,
+          body: { message: 'Mock response', id: ctx.params.id }
+        };
+      };
+    `;
+
+    (generateText as any).mockResolvedValue({
+      text: mockGeneratedCode,
+      usage: { promptTokens: 50, completionTokens: 100 },
+    });
+
+    // Act: call the service
+    const aiService = new AIService();
+    const result = await aiService.generateScript({
+      samples: [
+        { request: { method: 'GET', path: '/api/users/1' }, response: { status: 200, body: { id: 1 } } },
+        // ... more samples
+      ],
+      model: 'gemma4:31b-cloud',
+    });
+
+    // Assert
+    expect(generateText).toHaveBeenCalledWith({
+      model: expect.any(Object),
+      prompt: expect.stringContaining('Generate Express-style mock handler'),
+      maxTokens: 4096,
+    });
+    expect(result.code).toContain('module.exports');
+    expect(result.model).toBe('gemma4:31b-cloud');
+  });
+
+  it('should handle AI generation errors', async () => {
+    (generateText as any).mockRejectedValue(new Error('API rate limit exceeded'));
+
+    const aiService = new AIService();
+    await expect(aiService.generateScript({ samples: [], model: 'gemma4:31b-cloud' }))
+      .rejects
+      .toThrow('API rate limit exceeded');
+  });
+});
+```
+
+### Test Fixtures for AI Responses
+
+Create reusable mock responses for common scenarios:
+
+```ts
+// test/helpers/ai-responses.ts
+export const mockGeneratedScript = (scenario: 'success' | 'error' | 'timeout' = 'success') => {
+  const scripts = {
+    success: `module.exports = async (req, ctx) => ({ status: 200, body: { ok: true } });`,
+    error: `module.exports = async (req, ctx) => ({ status: 500, body: { error: 'Internal error' } });`,
+    timeout: `module.exports = async (req, ctx) => { await ctx.utils.delay(1000); return { status: 200, body: { delayed: true } }; };`,
+  };
+  return scripts[scenario];
+};
+
+export function createMockAIResponse(code: string = mockGeneratedScript('success')) {
+  return {
+    text: code,
+    usage: { promptTokens: 120, completionTokens: 80, totalTokens: 200 },
+    finishReason: 'stop' as const,
+  };
+}
+```
+
+### Local Ollama Testing (Manual/Integration)
+
+For manual testing or integration tests with a real local Ollama instance:
+
+```ts
+// test/integration/ai.ollama.integration.test.ts
+import { describe, it, expect } from 'vitest';
+
+// Skip if Ollama is not running
+const shouldSkip = !process.env.TEST_OLLAMA;
+describe.runIf(!shouldSkip)('Ollama Integration', () => {
+  it('should connect to local Ollama endpoint', async () => {
+    const response = await fetch('http://localhost:11434/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gemma4:31b-cloud',
+        messages: [{ role: 'user', content: 'Generate a simple Express handler' }],
+        stream: false,
+      }),
+    });
+
+    expect(response.ok).toBe(true);
+    const data = await response.json();
+    expect(data.choices).toHaveLength(1);
+    expect(data.choices[0].message.content).toBeDefined();
+  });
+});
+```
+
+**Note:** Integration tests with real Ollama are **excluded from unit test runs** and only execute when `TEST_OLLAMA=1` is set.
 
 ---
 

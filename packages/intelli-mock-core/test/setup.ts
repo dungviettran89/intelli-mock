@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { vi, beforeEach, afterEach } from 'vitest';
 import { resetConfig } from '../src/config/env';
 

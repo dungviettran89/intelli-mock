@@ -23,6 +23,7 @@ Teams building frontend applications often depend on backend APIs that are incom
 - Supporting GraphQL or gRPC protocols (REST only, Phase 1)
 - Real-time collaboration features
 - Mobile-native apps (responsive web only)
+- Hosting or managing AI models — we use local OpenAI-compatible endpoints for development
 
 ## Requirements
 
@@ -106,6 +107,8 @@ All tests are **100% offline and fully mocked**. See [`docs/TESTING.md`](./TESTI
 
 ### Phase 3: AI Engine
 - [ ] Vercel AI SDK integration
+- [ ] Local Ollama OpenAI-compatible endpoint for development (`http://localhost:11434/v1`)
+- [ ] Default model for dev/testing: `gemma4:31b-cloud`
 - [ ] Prompt engineering for script generation
 - [ ] Script versioning
 - [ ] Syntax validation
@@ -133,3 +136,36 @@ All tests are **100% offline and fully mocked**. See [`docs/TESTING.md`](./TESTI
 - [ ] Traffic log retention cron
 - [ ] Docker image
 - [ ] CI/CD pipeline
+
+## Local AI Development
+
+For local development and testing, Intelli-Mock uses **Ollama** with an OpenAI-compatible endpoint:
+
+- **Endpoint**: `http://localhost:11434/v1`
+- **Model**: `gemma4:31b-cloud` (default for dev/testing)
+- **No API key required**: Ollama accepts any value for `AI_API_KEY`
+- **Benefits**: Fully offline, no rate limits, no external dependencies
+
+### Setup
+
+```bash
+# Install Ollama (macOS/Linux)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull the model
+ollama pull gemma4:31b-cloud
+
+# Verify endpoint
+curl http://localhost:11434/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gemma4:31b-cloud","messages":[{"role":"user","content":"Hello"}],"stream":false}'
+```
+
+### Environment Variables
+
+```env
+AI_PROVIDER=openai
+AI_BASE_URL=http://localhost:11434/v1
+AI_API_KEY=ollama
+AI_MODEL=gemma4:31b-cloud
+```

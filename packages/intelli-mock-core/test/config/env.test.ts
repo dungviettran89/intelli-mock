@@ -18,8 +18,8 @@ describe('loadAppConfig', () => {
     expect(config.auth.algorithm).toBe('RS256');
     expect(config.auth.issuer).toBe('test-issuer'); // setup.ts overrides default
     expect(config.ai.provider).toBe('openai');
-    expect(config.ai.baseUrl).toBe('https://api.openai.com/v1');
-    expect(config.ai.model).toBe('gpt-4o');
+    expect(config.ai.baseUrl).toBe('http://localhost:11434/v1');
+    expect(config.ai.model).toBe('gemma4:31b-cloud');
   });
 
   it('should parse PORT from env', () => {

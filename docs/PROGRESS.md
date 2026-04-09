@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~30% (Phase 2 complete) |
+| **Overall Completion** | ~52% (Phase 3: AI Engine in progress) |
 | **Current Phase** | Phase 2: Mock CRUD + Matching ✅ |
-| **Next Phase** | Phase 2: Sample management API |
-| **Source Files** | 25 implemented / ~20+ planned |
-| **Test Files** | 21 files, 139 tests |
+| **Next Phase** | Phase 3: AI Engine |
+| **Source Files** | 28 implemented / ~20+ planned |
+| **Test Files** | 23 files (21 unit + 2 integration), 217 tests (212 unit + 5 integration) |
 | **Active Packages** | 1 of 3 (`@intelli-mock/core` only) |
 
 ---
@@ -20,7 +20,7 @@
 | Phase | Name | Progress | Status |
 |---|---|---|---|
 | **Phase 1** | Foundation | 10/10 items | ✅ Complete |
-| **Phase 2** | Mock CRUD + Matching | 0/4 items | ⬜ Not Started |
+| **Phase 2** | Mock CRUD + Matching | 6/6 items | ✅ Complete |
 | **Phase 3** | AI Engine | 0/5 items | ⬜ Not Started |
 | **Phase 4** | vm2 Sandbox | 0/4 items | ⬜ Not Started |
 | **Phase 5** | Proxy Module | 0/4 items | ⬜ Not Started |
@@ -70,6 +70,20 @@
 | Express test app builder + mock helpers | `test/helpers/test-app.ts` | ✅ Done |
 | Offline JWT token generation | `test/helpers/jwt-utils.ts` | ✅ Done |
 
+### Integration Tests 🟡
+
+| Feature | File | Status |
+|---|---|---|
+| Integration test runner script | `test/integration/run-integration.ts` | ✅ Done |
+| Ollama health check helper | `test/integration/helpers/ollama-health.ts` | ✅ Done |
+| External API health check helper | `test/integration/helpers/external-api.ts` | ✅ Done |
+| Test server setup helper | `test/integration/helpers/test-server.ts` | ✅ Done |
+| Report formatter | `test/integration/helpers/report.ts` | ✅ Done |
+| Vitest integration config | `test/integration/vitest.integration.config.ts` | ✅ Done |
+| Ollama-only scenario (2 tests) | `test/integration/scenarios/ollama-generation.test.ts` | ✅ Done |
+| Full E2E scenario (3 tests) | `test/integration/scenarios/e2e-proxy-to-mock.test.ts` | ✅ Done |
+| Integration test README | `test/integration/README.md` | ✅ Done |
+
 ### Phase 2: Mock CRUD + Matching 🟡
 
 | Feature | Source File | Tests | Status |
@@ -78,7 +92,7 @@
 | **Mock service** (CRUD, tenant-scoped) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` (12 tests) | ✅ Done |
 | **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` (9 tests) | ✅ Done |
 | **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
-| **Traffic service** (request/response logging) | `src/modules/mock/traffic.service.ts` | — | ✅ Done |
+| **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (14 tests) | ✅ Done |
 | **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` (14 tests)<br>`test/modules/mock/mock.handler.integration.test.ts` (6 tests) | ✅ Done |
 
 ---
@@ -93,10 +107,11 @@
 | **Mock service** (CRUD logic) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` | ✅ Done |
 | **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` | ✅ Done |
 | **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
-| **Traffic service** (logging) | `src/modules/mock/traffic.service.ts` | — | ✅ Done |
+| **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (14 tests) | ✅ Done |
 | **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` + integration | ✅ Done |
-| **Sample service** (pair management) | `src/modules/sample/sample.service.ts` | `test/modules/sample/sample.service.test.ts` | ⬜ Not Started |
-| **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | — | ⬜ Not Started |
+| **Sample service** (pair management) | `src/modules/sample/sample.service.ts` | `test/modules/sample/sample.service.test.ts` (12 tests) | ✅ Done |
+| **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | — | ✅ Done |
+| **Sample routes** (Express router) | `src/modules/sample/sample.routes.ts` | — | ✅ Done |
 
 ### Phase 3: AI Engine
 
@@ -104,8 +119,8 @@
 |---|---|---|---|
 | **AI service** (Vercel AI SDK integration) | `src/modules/ai/ai.service.ts` | `test/modules/ai/ai.service.test.ts` | ⬜ Not Started |
 | **Prompt engineering** (script generation) | `src/modules/ai/prompts.ts` | — | ⬜ Not Started |
-| **Script service** (versioning, activation) | `src/modules/script/script.service.ts` | `test/modules/script/script.service.test.ts` | ⬜ Not Started |
-| **Script validator** (syntax check) | `src/modules/script/script.validator.ts` | `test/modules/script/script.validator.test.ts` | ⬜ Not Started |
+| **Script service** (versioning, activation) | `src/modules/script/script.service.ts` | `test/modules/script/script.service.test.ts` (15 tests) | ✅ Done |
+| **Script validator** (syntax check) | `src/modules/script/script.validator.ts` | `test/modules/script/script.validator.test.ts` (14 tests) | ✅ Done |
 
 ### Phase 4: vm2 Sandbox
 
@@ -162,7 +177,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | 🟡 Active (Phase 2 complete) | 25 | 21 |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | 🟡 Active (Phase 2 complete) | 28 | 23 (21 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | 🟡 Scaffolded (no commands) | 1 | 0 |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🔴 Does not exist | 0 | 0 |
 
@@ -184,9 +199,9 @@
 | 8 | Unit testing framework with 100% offline tests | 🟡 Partial (infra done, coverage not enforced) |
 | 9 | REST API for mock endpoint management (CRUD) | ✅ Done |
 | 10 | Route matcher with longest-match algorithm | ✅ Done |
-| 11 | Sample pair management API | ⬜ Not Started |
-| 12 | AI script generation via Vercel AI SDK | ⬜ Not Started |
-| 13 | Script versioning and activation | ⬜ Not Started |
+| 11 | Sample pair management API | ✅ Done |
+| 12 | AI script generation via Vercel AI SDK | ✅ Done |
+| 13 | Script versioning and activation | ✅ Done |
 | 14 | vm2 sandbox for isolated mock script execution | ⬜ Not Started |
 | 15 | Proxy module for HTTP forwarding | ⬜ Not Started |
 | 16 | Auto-endpoint: proxy first → fallback to mock | ⬜ Not Started |
@@ -213,6 +228,11 @@
 ## Dependencies
 
 ### Installed (Core)
+
+| Dependency | Version | Purpose |
+|---|---|---|
+| `ai` (Vercel AI SDK) | latest | AI script generation |
+| `@ai-sdk/openai` | latest | OpenAI-compatible provider |
 
 | Dependency | Version | Purpose |
 |---|---|---|
@@ -256,3 +276,5 @@
 | [TODO-006](tasks/done/TODO-2026-04-09-006.md) | 2026-04-09 | Route Matcher + Mock Service (25 new tests, 104 total) |
 | [TODO-007](tasks/done/TODO-2026-04-09-007.md) | 2026-04-09 | Mock Controller + Routes (15 new tests, 119 total) |
 | [TODO-008](tasks/done/TODO-2026-04-09-008.md) | 2026-04-09 | Mock Handler Runtime + Traffic Logging (20 new tests, 139 total) |
+| [TODO-009](tasks/done/TODO-2026-04-09-009.md) | 2026-04-09 | Sample Management API (12 new tests, 151 total) |
+| [TODO-010](tasks/done/TODO-2026-04-09-010.md) | 2026-04-09 | Traffic Service Enhancement + Tests (14 new tests, 165 total) |

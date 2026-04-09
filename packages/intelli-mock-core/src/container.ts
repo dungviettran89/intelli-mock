@@ -5,6 +5,11 @@ import { MockService } from './modules/mock/mock.service';
 import { MockController } from './modules/mock/mock.controller';
 import { MockHandler } from './modules/mock/mock.handler';
 import { TrafficService } from './modules/mock/traffic.service';
+import { SampleService } from './modules/sample/sample.service';
+import { SampleController } from './modules/sample/sample.controller';
+import { ScriptService } from './modules/script/script.service';
+import { ScriptValidator } from './modules/script/script.validator';
+import { AIService } from './modules/ai/ai.service';
 import { createAuthMiddleware } from './core/auth/jwt.middleware';
 
 /**
@@ -21,6 +26,11 @@ export function configureContainer() {
   container.registerSingleton(MockController);
   container.registerSingleton(TrafficService);
   container.registerSingleton(MockHandler);
+  container.registerSingleton(SampleService);
+  container.registerSingleton(SampleController);
+  container.registerSingleton(ScriptService);
+  container.registerSingleton(ScriptValidator);
+  container.registerSingleton(AIService);
 
   // Factory for auth middleware (depends on TenantResolver instance)
   container.register('AuthMiddleware', {

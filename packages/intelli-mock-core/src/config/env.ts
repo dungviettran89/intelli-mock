@@ -76,9 +76,9 @@ export function loadAppConfig(): AppConfig {
     },
     ai: {
       provider: process.env.AI_PROVIDER || 'openai',
-      baseUrl: process.env.AI_BASE_URL || 'https://api.openai.com/v1',
-      apiKey: process.env.AI_API_KEY || '',
-      model: process.env.AI_MODEL || 'gpt-4o',
+      baseUrl: process.env.AI_BASE_URL || 'http://localhost:11434/v1',
+      apiKey: process.env.AI_API_KEY || 'ollama',
+      model: process.env.AI_MODEL || 'gemma4:31b-cloud',
     },
     security: {
       allowedHeaders: parseStringList(

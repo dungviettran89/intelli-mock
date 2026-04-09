@@ -339,6 +339,7 @@ interface MockResponse {
 | TypeORM with dual driver (sql.js / MariaDB) | Zero-setup dev, prod-ready | Prisma (no sql.js support) |
 | vm2 for sandbox execution | Isolated, no filesystem/OS access | Node vm module (less isolation) |
 | Vercel AI SDK (`ai`) | Provider-agnostic, OpenAI-compatible | Direct OpenAI SDK |
+| **Local Ollama for dev/testing** | Fully offline, no API keys, no rate limits | Cloud OpenAI, other providers |
 | tsyringe DI | Decorator-based, works well with TypeORM | Inversify, manual DI |
 | Longest-match routing | Express-style, intuitive for overlapping paths | First-match, priority-based |
 | TrafficLog SET NULL on endpoint delete | Preserves traffic history for analysis | CASCADE delete |
@@ -369,6 +370,8 @@ interface MockResponse {
 
 ### Phase 3: AI Engine
 - [ ] Vercel AI SDK integration
+- [ ] Local Ollama OpenAI-compatible endpoint for development (`http://localhost:11434/v1`)
+- [ ] Default model for dev/testing: `gemma4:31b-cloud`
 - [ ] Prompt engineering for script generation
 - [ ] Script versioning
 - [ ] Syntax validation
@@ -440,9 +443,9 @@ DB_PASSWORD=
 
 # AI Configuration
 AI_PROVIDER=openai      # OpenAI-compatible
-AI_BASE_URL=https://api.openai.com/v1
-AI_API_KEY=sk-...
-AI_MODEL=gpt-4o
+AI_BASE_URL=http://localhost:11434/v1   # Local Ollama for dev/testing
+AI_API_KEY=ollama       # Ollama doesn't require a real key
+AI_MODEL=gemma4:31b-cloud
 
 # Auth
 JWT_ALGORITHM=RS256     # RS256 | ES256 (asymmetric)
@@ -452,4 +455,86 @@ JWT_ISSUER=intelli-mock
 # Security
 ALLOWED_HEADERS=authorization,content-type,x-tenant-id
 CORS_ORIGINS=http://localhost:5173
+```
+
+## Local AI Development with Ollama
+
+For local development and testing, Intelli-Mock uses **Ollama** running an OpenAI-compatible endpoint. This provides a fully offline AI experience with no API keys, no rate limits, and no external dependencies.
+
+### Architecture
+
+```
+┌─────────────────────────────────────────┐
+│         Intelli-Mock Server             │
+│                                         │
+│   ┌───────────────────────────────┐     │
+│   │  Vercel AI SDK (ai)           │     │
+│   │  (OpenAI-compatible client)   │     │
+│   └───────────────┬───────────────┘     │
+│                   │                     │
+│                   │ HTTP POST           │
+│                   │ /v1/chat/completions│
+│                   ▼                     │
+└─────────────────────────────────────────┘
+                    │
+                    │ (same machine)
+                    ▼
+┌─────────────────────────────────────────┐
+│            Ollama Service               │
+│                                         │
+│   Endpoint: http://localhost:11434/v1   │
+│   Model:    gemma4:31b-cloud            │
+│   API Key:  (any value accepted)        │
+│                                         │
+│   ┌─────────────────────────────────┐   │
+│   │  Gemma4 31B Model (Cloud)       │   │
+│   │  - Open weights, self-hosted    │   │
+│   │  - Optimized for code gen       │   │
+│   └─────────────────────────────────┘   │
+└─────────────────────────────────────────┘
+```
+
+### Setup Instructions
+
+```bash
+# 1. Install Ollama (macOS/Linux)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# 2. Start Ollama service
+ollama serve
+
+# 3. Pull the model
+ollama pull gemma4:31b-cloud
+
+# 4. Verify the endpoint
+curl http://localhost:11434/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemma4:31b-cloud",
+    "messages": [{"role": "user", "content": "Hello"}],
+    "stream": false
+  }'
+```
+
+### Benefits
+
+| Benefit | Description |
+|---------|-------------|
+| **Fully Offline** | No internet connection required after model download |
+| **No API Keys** | Ollama accepts any value for the API key header |
+| **No Rate Limits** | Local execution means no throttling or quotas |
+| **Cost Free** | No per-token charges, unlimited requests |
+| **Reproducible** | Same model version, same responses |
+| **Fast Iteration** | No network latency, immediate feedback |
+
+### Production Note
+
+For production deployments, replace the local Ollama endpoint with a cloud OpenAI-compatible provider:
+
+```env
+# Production AI Configuration
+AI_PROVIDER=openai
+AI_BASE_URL=https://api.openai.com/v1
+AI_API_KEY=sk-...
+AI_MODEL=gpt-4o
 ```

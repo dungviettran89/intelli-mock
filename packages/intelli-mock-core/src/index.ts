@@ -41,3 +41,12 @@ export { createMockRouter } from './modules/mock/mock.routes';
 export { MockHandler } from './modules/mock/mock.handler';
 export { TrafficService } from './modules/mock/traffic.service';
 export { TrafficRequest, TrafficResponse } from './entities/traffic-log.entity';
+
+// Script module
+export { ScriptService, CreateScriptDto } from './modules/script/script.service';
+export { ScriptValidator, ValidationResult } from './modules/script/script.validator';
+
+// AI module
+export { AIService, GenerateScriptInput, GeneratedScript } from './modules/ai/ai.service';
+export { SYSTEM_PROMPT, createUserPrompt, createTestPrompt, SamplePairForPrompt } from './modules/ai/prompts';
+
