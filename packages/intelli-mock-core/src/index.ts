@@ -30,3 +30,9 @@ export { configureContainer, getAuthMiddleware, container } from './container';
 // Auth
 export { TenantResolver, JwtPayload, ResolvedContext } from './core/auth/user-resolver';
 export { createAuthMiddleware } from './core/auth/jwt.middleware';
+
+// Matching
+export { RouteMatcher, MatchResult } from './core/matching/route-matcher';
+
+// Mock module
+export { MockService, CreateMockEndpointDto, UpdateMockEndpointDto } from './modules/mock/mock.service';
