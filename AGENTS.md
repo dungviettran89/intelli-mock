@@ -42,6 +42,17 @@ All project docs live in `docs/`:
 - **Always update docs** when making architectural or requirement changes
 - Use `trash` > `rm`
 
+## Pre-Commit Checklist
+
+Before every commit, run these in order:
+
+1. **Format** — `pnpm -r format` (or project formatter)
+2. **Build** — `pnpm -r build`
+3. **Type-check** — `pnpm -r typecheck`
+4. **Test** — `pnpm test`
+
+All must pass with exit code 0. If any step fails, fix it before committing.
+
 ## Working with Agents
 
 This project has specialized sub-agents. Use the right one for the job:
