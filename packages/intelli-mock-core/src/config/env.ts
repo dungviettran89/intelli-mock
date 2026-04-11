@@ -7,6 +7,7 @@ export interface ServerConfig {
 }
 
 export interface AuthConfig {
+  enabled: boolean;
   algorithm: 'RS256' | 'ES256';
   publicKey: string;
   issuer: string;
@@ -71,6 +72,7 @@ export function loadAppConfig(): AppConfig {
       nodeEnv: process.env.NODE_ENV || 'development',
     },
     auth: {
+      enabled: !authDisabled,
       algorithm: jwtAlgorithm,
       publicKey: authDisabled ? (jwtPublicKeyRaw || 'disabled') : readPublicKey(jwtPublicKeyRaw),
       issuer: process.env.JWT_ISSUER || 'intelli-mock',

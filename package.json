@@ -10,7 +10,8 @@
     "test": "pnpm -r test",
     "test:watch": "pnpm -r --parallel test:watch",
     "test:coverage": "pnpm -r test:coverage",
-    "test:integration": "pnpm --filter @intelli-mock/core test:integration"
+    "test:integration": "pnpm --filter @intelli-mock/core test:integration",
+    "test:e2e": "pnpm --filter @intelli-mock/ui test:e2e"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

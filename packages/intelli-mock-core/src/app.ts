@@ -9,6 +9,8 @@ import { createScriptRouter } from './modules/script/script.routes';
 import { container } from 'tsyringe';
 import { MockHandler } from './modules/mock/mock.handler';
 import { AutoHandler } from './modules/mock/auto.handler';
+import { Tenant } from './entities/tenant.entity';
+import { User } from './entities/user.entity';
 
 export interface AppOptions {
   /** Absolute path to the UI dist directory to serve static files. If not provided, UI will not be served. */
@@ -56,7 +58,29 @@ export async function createApp(options: AppOptions = {}): Promise<Application> 
   app.use(express.urlencoded({ extended: true }));
 
   // Auth middleware — verifies JWT, resolves tenant/user
-  app.use(getAuthMiddleware());
+  if (config.auth.enabled) {
+    app.use(getAuthMiddleware());
+  } else {
+    console.warn('[WARN] Auth disabled — server is open to all requests');
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      req.tenant = {
+        id: 'test-tenant-id',
+        slug: 'test-tenant',
+        name: 'Test Tenant',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as Tenant;
+      req.user = {
+        id: 'test-user-id',
+        sub: 'test-user',
+        tenantId: 'test-tenant-id',
+        roles: ['admin'],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as User;
+      next();
+    });
+  }
 
   // API routes — mock endpoint management
   app.use('/api/mocks', createMockRouter());

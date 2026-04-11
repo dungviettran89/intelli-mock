@@ -14,8 +14,14 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': 'http://localhost:3000',
-      '/_it': 'http://localhost:3000',
+      '/api': {
+        target: process.env.BACKEND_URL || 'http://localhost:3000',
+        changeOrigin: true,
+      },
+      '/_it': {
+        target: process.env.BACKEND_URL || 'http://localhost:3000',
+        changeOrigin: true,
+      },
     },
   },
 });
