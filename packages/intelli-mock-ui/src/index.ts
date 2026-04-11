@@ -2,6 +2,7 @@
 // Registers all web components and bootstraps the application.
 
 import './components/mock-list.js';
+import './components/mock-detail.js';
 
 // Re-export API client for consumers
 export { createApiClient } from './services/api.js';

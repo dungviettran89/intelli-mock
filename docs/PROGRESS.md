@@ -6,10 +6,10 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~87% (Phase 6: Web UI 🟡 Started, CLI ✅ Complete + E2E Tests ✅) |
+| **Overall Completion** | ~89% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 45 implemented / ~20+ planned |
+| **Source Files** | 46 implemented / ~19+ planned |
 | **Test Files** | 32 files (322 unit + 10 integration + 7 CLI E2E), 339 tests total |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -155,7 +155,7 @@
 | **Package scaffold** (Lit Element + Vite) | `packages/intelli-mock-ui/` | ✅ Done |
 | **API service** (HTTP client) | `packages/intelli-mock-ui/src/services/api.ts` | ✅ Done |
 | **Mock list view** | `packages/intelli-mock-ui/src/components/mock-list.ts` | ✅ Done |
-| **Mock detail view** | `packages/intelli-mock-ui/src/components/mock-detail.ts` | ⬜ Not Started |
+| **Mock detail view** | `packages/intelli-mock-ui/src/components/mock-detail.ts` | ✅ Done |
 | **Script editor** (CodeMirror 6) | `packages/intelli-mock-ui/src/components/script-editor.ts` | ⬜ Not Started |
 | **Sample management UI** | `packages/intelli-mock-ui/src/components/sample-editor.ts` | ⬜ Not Started |
 | **Try-it panel** | `packages/intelli-mock-ui/src/components/try-it.ts` | ⬜ Not Started |
@@ -190,7 +190,7 @@
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete) | 34 | 28 (26 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start command + E2E tests complete) | 3 | 3 (7 E2E tests) |
-| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6 started) | 3 | 0 |
+| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Mock Detail ✅) | 4 | 0 |
 
 ---
 
