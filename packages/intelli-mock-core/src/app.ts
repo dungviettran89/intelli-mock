@@ -5,6 +5,7 @@ import { configureContainer, getAuthMiddleware } from './container';
 import { getConfig } from './config/env';
 import { createMockRouter } from './modules/mock/mock.routes';
 import { createSampleRouter } from './modules/sample/sample.routes';
+import { createScriptRouter } from './modules/script/script.routes';
 import { container } from 'tsyringe';
 import { MockHandler } from './modules/mock/mock.handler';
 import { AutoHandler } from './modules/mock/auto.handler';
@@ -57,6 +58,9 @@ export async function createApp(): Promise<Application> {
 
   // API routes — sample pair management
   app.use('/api/samples', createSampleRouter());
+
+  // API routes — script testing
+  app.use('/api/scripts', createScriptRouter());
 
   // Runtime mock handler — serves mock requests at /_it/mock/*
   const mockHandler = container.resolve(MockHandler);

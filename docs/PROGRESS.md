@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~74% (Phase 5: Proxy Module ✅) |
-| **Current Phase** | Phase 5: Proxy Module ✅ |
+| **Overall Completion** | ~75% (Phase 4: vm2 Sandbox ✅) |
+| **Current Phase** | Phase 4: vm2 Sandbox ✅ |
 | **Next Phase** | Phase 6: Web UI |
-| **Source Files** | 34 implemented / ~20+ planned |
-| **Test Files** | 28 files (282 unit + 51 integration), 333 tests total |
+| **Source Files** | 37 implemented / ~20+ planned |
+| **Test Files** | 29 files (322 unit + 10 integration), 332 tests total |
 | **Active Packages** | 1 of 3 (`@intelli-mock/core` only) |
 
 ---
@@ -136,7 +136,7 @@
 |---|---|---|---|
 | **Sandbox utils** (vm2 setup, context) | `src/utils/sandbox.ts` | `test/utils/sandbox.test.ts` (18 tests) | ✅ Done |
 | **Script runner** (vm2 execution) | `src/modules/script/script.runner.ts` | `test/modules/script/script.runner.test.ts` (12 tests) | ✅ Done |
-| **Test/try endpoint** | — | — | ⬜ Not Started |
+| **Test/try endpoint** | `src/modules/script/script.controller.ts`<br>`src/modules/script/script.routes.ts` | `test/modules/script/script.controller.test.ts` (10 tests) | ✅ Done |
 | **Request/response context injection** | — | — | ✅ Done (integrated in ScriptRunner) |
 
 ### Phase 5: Proxy Module

@@ -9,6 +9,8 @@ import { SampleService } from './modules/sample/sample.service';
 import { SampleController } from './modules/sample/sample.controller';
 import { ScriptService } from './modules/script/script.service';
 import { ScriptValidator } from './modules/script/script.validator';
+import { ScriptController } from './modules/script/script.controller';
+import { ScriptRunner } from './modules/script/script.runner';
 import { AIService } from './modules/ai/ai.service';
 import { ProxyService } from './modules/proxy/proxy.service';
 import { createAuthMiddleware } from './core/auth/jwt.middleware';
@@ -31,6 +33,8 @@ export function configureContainer() {
   container.registerSingleton(SampleController);
   container.registerSingleton(ScriptService);
   container.registerSingleton(ScriptValidator);
+  container.registerSingleton(ScriptController);
+  container.registerSingleton(ScriptRunner);
   container.registerSingleton(AIService);
   container.registerSingleton(ProxyService);
 

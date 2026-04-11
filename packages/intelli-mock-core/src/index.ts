@@ -46,6 +46,9 @@ export { TrafficRequest, TrafficResponse } from './entities/traffic-log.entity';
 // Script module
 export { ScriptService, CreateScriptDto } from './modules/script/script.service';
 export { ScriptValidator, ValidationResult } from './modules/script/script.validator';
+export { ScriptController } from './modules/script/script.controller';
+export { createScriptRouter } from './modules/script/script.routes';
+export { ScriptRunner, ScriptExecutionResult, ScriptExecutionError } from './modules/script/script.runner';
 
 // AI module
 export { AIService, GenerateScriptInput, GeneratedScript } from './modules/ai/ai.service';
