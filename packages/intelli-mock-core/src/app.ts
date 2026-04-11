@@ -6,6 +6,7 @@ import { getConfig } from './config/env';
 import { createMockRouter } from './modules/mock/mock.routes';
 import { createSampleRouter } from './modules/sample/sample.routes';
 import { createScriptRouter } from './modules/script/script.routes';
+import { createTrafficRouter } from './modules/traffic/traffic.routes';
 import { container } from 'tsyringe';
 import { MockHandler } from './modules/mock/mock.handler';
 import { AutoHandler } from './modules/mock/auto.handler';
@@ -90,6 +91,9 @@ export async function createApp(options: AppOptions = {}): Promise<Application> 
 
   // API routes — script testing
   app.use('/api/scripts', createScriptRouter());
+
+  // API routes — traffic logs
+  app.use('/api/traffic', createTrafficRouter());
 
   // Runtime mock handler — serves mock requests at /_it/mock/*
   const mockHandler = container.resolve(MockHandler);

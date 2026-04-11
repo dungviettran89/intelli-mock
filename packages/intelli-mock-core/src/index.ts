@@ -42,6 +42,8 @@ export { MockHandler } from './modules/mock/mock.handler';
 export { AutoHandler } from './modules/mock/auto.handler';
 export { TrafficService } from './modules/mock/traffic.service';
 export { TrafficRequest, TrafficResponse } from './entities/traffic-log.entity';
+export { TrafficController } from './modules/traffic/traffic.controller';
+export { createTrafficRouter } from './modules/traffic/traffic.routes';
 
 // Script module
 export { ScriptService, CreateScriptDto } from './modules/script/script.service';
