@@ -6,6 +6,7 @@ import { MockHandler } from '@src/modules/mock/mock.handler.js';
 import { RouteMatcher } from '@src/core/matching/route-matcher.js';
 import { MockService } from '@src/modules/mock/mock.service.js';
 import { TrafficService } from '@src/modules/mock/traffic.service.js';
+import { ScriptRunner } from '@src/modules/script/script.runner.js';
 import { HttpMethod } from '@src/entities/mock-endpoint.entity.js';
 
 // Mock the data source
@@ -46,6 +47,7 @@ vi.mock('@src/config/env.js', () => ({
 
 describe('MockHandler Integration (HTTP + Service + Matcher)', () => {
   let handler: MockHandler;
+  let mockScriptRunner: ScriptRunner;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -53,8 +55,9 @@ describe('MockHandler Integration (HTTP + Service + Matcher)', () => {
     const mockRouteMatcher = new RouteMatcher();
     const mockMockService = new MockService();
     const mockTrafficService = new TrafficService();
+    mockScriptRunner = { run: vi.fn() } as any;
 
-    handler = new MockHandler(mockRouteMatcher, mockMockService, mockTrafficService);
+    handler = new MockHandler(mockRouteMatcher, mockMockService, mockTrafficService, mockScriptRunner);
   });
 
   function createApp() {
@@ -106,11 +109,17 @@ describe('MockHandler Integration (HTTP + Service + Matcher)', () => {
         samplePairs: [{}, {}, {}, {}, {}],
       };
       mockEndpointRepo.find.mockResolvedValue([endpoint]);
-      mockScriptRepo.findOne.mockResolvedValue({
+      const activeScript = {
         id: 'script-1',
         endpointId: 'ep1',
         isActive: true,
         version: 1,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      (mockScriptRunner.run as any).mockResolvedValue({
+        success: true,
+        response: { status: 200, body: { message: 'Mock script response' } },
+        executionTimeMs: 10,
       });
 
       const app = createApp();
@@ -118,8 +127,7 @@ describe('MockHandler Integration (HTTP + Service + Matcher)', () => {
         .get('/_it/mock/api/users')
         .expect(200);
 
-      expect(response.body.message).toContain('Mock script execution pending');
-      expect(response.body.endpointId).toBe('ep1');
+      expect(response.body).toEqual({ message: 'Mock script response' });
     });
 
     it('should handle POST requests correctly', async () => {

@@ -5,6 +5,10 @@ import express from 'express';
 import { MockController } from '@src/modules/mock/mock.controller.js';
 import { MockService } from '@src/modules/mock/mock.service.js';
 import { HttpMethod, MockEndpointStatus } from '@src/entities/mock-endpoint.entity.js';
+import { AIService } from '@src/modules/ai/ai.service.js';
+import { ScriptService } from '@src/modules/script/script.service.js';
+import { SampleService } from '@src/modules/sample/sample.service.js';
+import { SampleSource } from '@src/entities/sample-pair.entity.js';
 
 // Mock the data source
 const mockRepo = {
@@ -32,10 +36,18 @@ vi.mock('@src/config/env.js', () => ({
 
 describe('MockController (HTTP integration)', () => {
   let controller: MockController;
+  let mockService: MockService;
+  let aiService: AIService;
+  let scriptService: ScriptService;
+  let sampleService: SampleService;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    controller = new MockController(new MockService());
+    mockService = new MockService();
+    aiService = { generateScript: vi.fn() } as unknown as AIService;
+    scriptService = { create: vi.fn() } as unknown as ScriptService;
+    sampleService = { findAll: vi.fn(), countByEndpoint: vi.fn() } as unknown as SampleService;
+    controller = new MockController(mockService, aiService, scriptService, sampleService);
   });
 
   describe('POST /api/mocks', () => {
@@ -205,6 +217,247 @@ describe('MockController (HTTP integration)', () => {
       });
 
       await request(app).delete('/api/mocks/nonexistent').expect(404);
+    });
+  });
+
+  describe('POST /api/mocks/:id/generate', () => {
+    const mockEndpoint = {
+      id: 'ep-1',
+      tenantId: 't1',
+      pathPattern: '/api/users/:id',
+      method: HttpMethod.GET,
+      status: MockEndpointStatus.DRAFT,
+      priority: 0,
+      proxyUrl: null,
+      proxyTimeoutMs: null,
+      promptExtra: null,
+    };
+
+    const mockSamples = Array.from({ length: 5 }, (_, i) => ({
+      id: `sample-${i}`,
+      endpointId: 'ep-1',
+      source: SampleSource.MANUAL,
+      request: { method: 'GET', path: `/api/users/${i + 1}`, params: { id: String(i + 1) } },
+      response: { status: 200, body: { id: i + 1, name: `User ${i + 1}` } },
+      createdAt: new Date(),
+      endpoint: {} as any,
+    }));
+
+    it('should return 201 with generated script when samples >= 5', async () => {
+      mockRepo.findOne.mockResolvedValue(mockEndpoint);
+      (sampleService.countByEndpoint as any).mockResolvedValue(5);
+      (sampleService.findAll as any).mockResolvedValue(mockSamples);
+      (aiService.generateScript as any).mockResolvedValue({
+        code: 'module.exports = async () => ({ status: 200, body: {} });',
+        model: 'gemma4:31b-cloud',
+        promptTokens: 100,
+        completionTokens: 50,
+        totalTokens: 150,
+      });
+      (scriptService.create as any).mockResolvedValue({
+        id: 'script-1',
+        version: 1,
+        validationError: null,
+      });
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/:id/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      const response = await request(app)
+        .post('/api/mocks/ep-1/generate')
+        .expect(201);
+
+      expect(response.body.code).toContain('module.exports');
+      expect(response.body.version).toBe(1);
+      expect(response.body.model).toBe('gemma4:31b-cloud');
+      expect(response.body.totalTokens).toBe(150);
+      expect(aiService.generateScript).toHaveBeenCalledWith(
+        expect.objectContaining({
+          samples: mockSamples,
+          pathPattern: '/api/users/:id',
+          method: HttpMethod.GET,
+        }),
+      );
+    });
+
+    it('should return 503 when sample count < 5', async () => {
+      mockRepo.findOne.mockResolvedValue(mockEndpoint);
+      (sampleService.countByEndpoint as any).mockResolvedValue(2);
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/:id/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      const response = await request(app)
+        .post('/api/mocks/ep-1/generate')
+        .expect(503);
+
+      expect(response.body.error).toBe('Not enough samples');
+      expect(response.body.current).toBe(2);
+      expect(aiService.generateScript).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 when endpoint not found', async () => {
+      mockRepo.findOne.mockResolvedValue(null);
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/:id/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      await request(app)
+        .post('/api/mocks/nonexistent/generate')
+        .expect(404);
+    });
+
+    it('should return 502 when AI generation fails', async () => {
+      mockRepo.findOne.mockResolvedValue(mockEndpoint);
+      (sampleService.countByEndpoint as any).mockResolvedValue(5);
+      (sampleService.findAll as any).mockResolvedValue(mockSamples);
+      (aiService.generateScript as any).mockRejectedValue(new Error('AI service unavailable'));
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/:id/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      const response = await request(app)
+        .post('/api/mocks/ep-1/generate')
+        .expect(502);
+
+      expect(response.body.error).toBe('AI generation failed');
+      expect(response.body.message).toBe('AI service unavailable');
+    });
+
+    it('should include validationError in response when script has syntax errors', async () => {
+      mockRepo.findOne.mockResolvedValue(mockEndpoint);
+      (sampleService.countByEndpoint as any).mockResolvedValue(5);
+      (sampleService.findAll as any).mockResolvedValue(mockSamples);
+      (aiService.generateScript as any).mockResolvedValue({
+        code: 'module.exports = async () => {',
+        model: 'gemma4:31b-cloud',
+        promptTokens: 100,
+        completionTokens: 50,
+        totalTokens: 150,
+      });
+      (scriptService.create as any).mockResolvedValue({
+        id: 'script-1',
+        version: 1,
+        validationError: 'Unexpected end of input',
+      });
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/:id/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      const response = await request(app)
+        .post('/api/mocks/ep-1/generate')
+        .expect(201);
+
+      expect(response.body.validationError).toBe('Unexpected end of input');
+    });
+
+    it('should filter samples to only those matching the endpoint', async () => {
+      const mixedSamples = [
+        ...mockSamples,
+        {
+          id: 'sample-other',
+          endpointId: 'ep-other',
+          source: SampleSource.MANUAL,
+          request: { method: 'GET', path: '/api/other' },
+          response: { status: 200, body: {} },
+          createdAt: new Date(),
+          endpoint: {} as any,
+        },
+      ];
+      mockRepo.findOne.mockResolvedValue(mockEndpoint);
+      (sampleService.countByEndpoint as any).mockResolvedValue(5);
+      (sampleService.findAll as any).mockResolvedValue(mixedSamples);
+      (aiService.generateScript as any).mockResolvedValue({
+        code: 'module.exports = async () => ({ status: 200, body: {} });',
+        model: 'gemma4:31b-cloud',
+        promptTokens: 100,
+        completionTokens: 50,
+        totalTokens: 150,
+      });
+      (scriptService.create as any).mockResolvedValue({
+        id: 'script-1',
+        version: 1,
+        validationError: null,
+      });
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/:id/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      await request(app)
+        .post('/api/mocks/ep-1/generate')
+        .expect(201);
+
+      // Should only pass 5 samples (not the one from other endpoint)
+      expect(aiService.generateScript).toHaveBeenCalledWith(
+        expect.objectContaining({
+          samples: expect.arrayContaining(mockSamples),
+        }),
+      );
+      const generateCall = (aiService.generateScript as any).mock.calls[0][0];
+      expect(generateCall.samples.length).toBe(5);
+    });
+
+    it('should pass promptExtra to AI service when present on endpoint', async () => {
+      const endpointWithPromptExtra = {
+        ...mockEndpoint,
+        promptExtra: 'Handle pagination headers',
+      };
+      mockRepo.findOne.mockResolvedValue(endpointWithPromptExtra);
+      (sampleService.countByEndpoint as any).mockResolvedValue(5);
+      (sampleService.findAll as any).mockResolvedValue(mockSamples);
+      (aiService.generateScript as any).mockResolvedValue({
+        code: 'module.exports = async () => ({ status: 200, body: {} });',
+        model: 'gemma4:31b-cloud',
+        promptTokens: 100,
+        completionTokens: 50,
+        totalTokens: 150,
+      });
+      (scriptService.create as any).mockResolvedValue({
+        id: 'script-1',
+        version: 1,
+        validationError: null,
+      });
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/:id/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      await request(app)
+        .post('/api/mocks/ep-1/generate')
+        .expect(201);
+
+      expect(aiService.generateScript).toHaveBeenCalledWith(
+        expect.objectContaining({
+          promptExtra: 'Handle pagination headers',
+        }),
+      );
     });
   });
 });

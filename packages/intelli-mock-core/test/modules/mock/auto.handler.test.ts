@@ -1,10 +1,11 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MockHandler } from '@src/modules/mock/mock.handler.js';
+import { AutoHandler } from '@src/modules/mock/auto.handler.js';
 import { RouteMatcher } from '@src/core/matching/route-matcher.js';
 import { MockService } from '@src/modules/mock/mock.service.js';
 import { TrafficService } from '@src/modules/mock/traffic.service.js';
 import { ScriptRunner } from '@src/modules/script/script.runner.js';
+import { ProxyService } from '@src/modules/proxy/proxy.service.js';
 import { HttpMethod, MockEndpointStatus } from '@src/entities/mock-endpoint.entity.js';
 
 // Mock the data source
@@ -34,12 +35,13 @@ vi.mock('@src/database/data-source.js', () => ({
   })),
 }));
 
-describe('MockHandler', () => {
-  let handler: MockHandler;
+describe('AutoHandler', () => {
+  let handler: AutoHandler;
   let mockRouteMatcher: any;
   let mockMockService: any;
   let mockTrafficService: any;
   let mockScriptRunner: any;
+  let mockProxyService: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -60,7 +62,17 @@ describe('MockHandler', () => {
       run: vi.fn(),
     };
 
-    handler = new MockHandler(mockRouteMatcher, mockMockService, mockTrafficService, mockScriptRunner);
+    mockProxyService = {
+      forwardRequest: vi.fn(),
+    };
+
+    handler = new AutoHandler(
+      mockRouteMatcher,
+      mockMockService,
+      mockTrafficService,
+      mockScriptRunner,
+      mockProxyService,
+    );
   });
 
   function createMockReq(overrides: any = {}) {
@@ -101,13 +113,14 @@ describe('MockHandler', () => {
       await handler.handle(req as any, res as any);
 
       expect(res.statusCode).toBe(404);
-      expect(res.jsonBody.error).toBe('Mock endpoint not found');
+      expect(res.jsonBody.error).toBe('Auto endpoint not found');
       expect(mockTrafficService.logTraffic).toHaveBeenCalledWith(
         expect.objectContaining({
           tenantId: 't1',
           endpointId: null,
           route: '/api/unknown',
           method: 'GET',
+          source: 'auto',
         }),
       );
     });
@@ -127,17 +140,151 @@ describe('MockHandler', () => {
     });
   });
 
-  describe('handle - no active script', () => {
-    it('should return 503 when no active script exists', async () => {
+  describe('handle - proxy success', () => {
+    it('should forward request and return proxy response when proxy succeeds', async () => {
       const endpoint = {
         id: 'ep1',
         pathPattern: '/api/users',
         method: HttpMethod.GET,
         priority: 0,
+        proxyUrl: 'https://api.example.com/users',
         samplePairs: [],
       };
       mockMockService.findCandidates.mockResolvedValue([endpoint]);
       mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: true,
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: { users: ['Alice', 'Bob'] },
+        latency: 50,
+      });
+
+      const req = createMockReq();
+      const res = createMockRes();
+
+      await handler.handle(req as any, res as any);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.jsonBody).toEqual({ users: ['Alice', 'Bob'] });
+      expect(mockProxyService.forwardRequest).toHaveBeenCalledWith(
+        'https://api.example.com/users',
+        expect.objectContaining({
+          method: 'GET',
+          headers: {},
+          body: null,
+        }),
+        't1',
+        'ep1',
+        '/api/users',
+        '/api/users',
+      );
+      expect(mockTrafficService.logTraffic).toHaveBeenCalledWith(
+        expect.objectContaining({
+          endpointId: 'ep1',
+          source: 'auto',
+        }),
+      );
+    });
+
+    it('should pass correct headers and body to proxy', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/data',
+        method: HttpMethod.POST,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/data',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: true,
+        status: 201,
+        body: { created: true },
+      });
+
+      const req = createMockReq({
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer token123' },
+        body: { name: 'Test' },
+      });
+      const res = createMockRes();
+
+      await handler.handle(req as any, res as any);
+
+      expect(mockProxyService.forwardRequest).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer token123' },
+          body: { name: 'Test' },
+        }),
+        expect.any(String),
+        expect.any(String),
+        expect.any(String),
+        expect.any(String),
+      );
+      expect(res.statusCode).toBe(201);
+    });
+  });
+
+  describe('handle - proxy failure with mock fallback', () => {
+    it('should fall back to mock when proxy fails', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: false,
+        error: { message: 'Connection refused', code: 'ECONNREFUSED' },
+        latency: 100,
+      });
+
+      const activeScript = {
+        id: 'script-1',
+        endpointId: 'ep1',
+        isActive: true,
+        version: 1,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      mockScriptRunner.run.mockResolvedValue({
+        success: true,
+        response: { status: 200, body: { message: 'Fallback mock response' } },
+        executionTimeMs: 10,
+      });
+
+      const req = createMockReq();
+      const res = createMockRes();
+
+      await handler.handle(req as any, res as any);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.jsonBody).toEqual({ message: 'Fallback mock response' });
+      expect(mockScriptRunner.run).toHaveBeenCalled();
+    });
+
+    it('should return 502 when proxy fails and no active script exists', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: false,
+        error: { message: 'Timeout', code: 'ETIMEDOUT' },
+      });
       mockScriptRepo.findOne.mockResolvedValue(null);
 
       const req = createMockReq();
@@ -145,18 +292,93 @@ describe('MockHandler', () => {
 
       await handler.handle(req as any, res as any);
 
-      expect(res.statusCode).toBe(503);
-      expect(res.jsonBody.error).toBe('No active mock script');
-      expect(res.jsonBody.currentSamples).toBe(0);
-      expect(res.jsonBody.minimumRequired).toBe(5);
+      expect(res.statusCode).toBe(502);
+      expect(res.jsonBody.error).toBe('Mock unavailable');
     });
 
-    it('should show remaining samples needed when some exist', async () => {
+    it('should return 500 when proxy fails and script execution fails', async () => {
       const endpoint = {
         id: 'ep1',
         pathPattern: '/api/users',
         method: HttpMethod.GET,
         priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: false,
+        error: { message: 'DNS error' },
+      });
+
+      const activeScript = {
+        id: 'script-1',
+        endpointId: 'ep1',
+        isActive: true,
+        version: 1,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      mockScriptRunner.run.mockResolvedValue({
+        success: false,
+        error: { name: 'Error', message: 'Script error', type: 'runtime' },
+        executionTimeMs: 5,
+      });
+
+      const req = createMockReq();
+      const res = createMockRes();
+
+      await handler.handle(req as any, res as any);
+
+      expect(res.statusCode).toBe(500);
+      expect(res.jsonBody.error).toBe('Script execution error');
+    });
+  });
+
+  describe('handle - no proxy_url (direct mock)', () => {
+    it('should skip proxy and execute mock directly when proxyUrl is not set', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: null,
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+
+      const activeScript = {
+        id: 'script-1',
+        endpointId: 'ep1',
+        isActive: true,
+        version: 1,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      mockScriptRunner.run.mockResolvedValue({
+        success: true,
+        response: { status: 200, body: { message: 'Direct mock response' } },
+        executionTimeMs: 8,
+      });
+
+      const req = createMockReq();
+      const res = createMockRes();
+
+      await handler.handle(req as any, res as any);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.jsonBody).toEqual({ message: 'Direct mock response' });
+      expect(mockProxyService.forwardRequest).not.toHaveBeenCalled();
+      expect(mockScriptRunner.run).toHaveBeenCalled();
+    });
+
+    it('should return 502 when no proxyUrl and no active script', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: undefined,
         samplePairs: [{}, {}], // 2 samples
       };
       mockMockService.findCandidates.mockResolvedValue([endpoint]);
@@ -168,63 +390,21 @@ describe('MockHandler', () => {
 
       await handler.handle(req as any, res as any);
 
-      expect(res.statusCode).toBe(503);
-      expect(res.jsonBody.message).toContain('3 more sample(s)');
+      expect(res.statusCode).toBe(502);
+      expect(res.jsonBody.error).toBe('Mock unavailable');
       expect(res.jsonBody.currentSamples).toBe(2);
+      expect(res.jsonBody.message).toContain('3 more sample(s)');
     });
   });
 
-  describe('handle - active script exists', () => {
-    it('should execute script and return 200 when active script exists and succeeds', async () => {
-      const endpoint = {
-        id: 'ep1',
-        pathPattern: '/api/users',
-        method: HttpMethod.GET,
-        priority: 0,
-        samplePairs: [{}, {}, {}, {}, {}], // 5 samples
-      };
-      mockMockService.findCandidates.mockResolvedValue([endpoint]);
-      mockRouteMatcher.match.mockReturnValue({ endpoint });
-      const activeScript = {
-        id: 'script-1',
-        endpointId: 'ep1',
-        isActive: true,
-        version: 1,
-      };
-      mockScriptRepo.findOne.mockResolvedValue(activeScript);
-      mockScriptRunner.run.mockResolvedValue({
-        success: true,
-        response: { status: 200, body: { message: 'Hello from script' } },
-        executionTimeMs: 10,
-      });
-
-      const req = createMockReq();
-      const res = createMockRes();
-
-      await handler.handle(req as any, res as any);
-
-      expect(res.statusCode).toBe(200);
-      expect(res.jsonBody).toEqual({ message: 'Hello from script' });
-      expect(mockScriptRunner.run).toHaveBeenCalledWith(
-        activeScript,
-        expect.objectContaining({
-          method: 'GET',
-          params: {},
-          query: {},
-          headers: {},
-          body: null,
-        }),
-        't1',
-        'ep1',
-      );
-    });
-
+  describe('handle - script execution', () => {
     it('should return 500 when script execution fails', async () => {
       const endpoint = {
         id: 'ep1',
         pathPattern: '/api/users',
         method: HttpMethod.GET,
         priority: 0,
+        proxyUrl: null,
         samplePairs: [],
       };
       mockMockService.findCandidates.mockResolvedValue([endpoint]);
@@ -258,7 +438,7 @@ describe('MockHandler', () => {
     });
 
     it('should include script version when executing', async () => {
-      const endpoint = { id: 'ep1', pathPattern: '/api/test', method: HttpMethod.GET, priority: 0, samplePairs: [] };
+      const endpoint = { id: 'ep1', pathPattern: '/api/test', method: HttpMethod.GET, priority: 0, proxyUrl: null, samplePairs: [] };
       mockMockService.findCandidates.mockResolvedValue([endpoint]);
       mockRouteMatcher.match.mockReturnValue({ endpoint });
       const activeScript = {
@@ -293,6 +473,7 @@ describe('MockHandler', () => {
         pathPattern: '/api/users',
         method: HttpMethod.GET,
         priority: 0,
+        proxyUrl: null,
         samplePairs: [],
       };
       mockMockService.findCandidates.mockResolvedValue([endpoint]);
@@ -336,6 +517,29 @@ describe('MockHandler', () => {
       expect(res.jsonBody.error).toBe('Internal server error');
     });
 
+    it('should return 500 when proxy service throws', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockRejectedValue(new Error('Proxy service error'));
+
+      const req = createMockReq();
+      const res = createMockRes();
+
+      await handler.handle(req as any, res as any);
+
+      expect(res.statusCode).toBe(500);
+      expect(res.jsonBody.error).toBe('Internal server error');
+      expect(res.jsonBody.message).toBe('Proxy service error');
+    });
+
     it('should log traffic even on error', async () => {
       mockMockService.findCandidates.mockRejectedValue(new Error('DB error'));
 
@@ -352,7 +556,7 @@ describe('MockHandler', () => {
   describe('handle - traffic logging', () => {
     it('should log every request with correct metadata', async () => {
       mockMockService.findCandidates.mockResolvedValue([]);
-      
+
       const req = createMockReq({
         path: '/api/data',
         method: 'POST',
@@ -367,7 +571,7 @@ describe('MockHandler', () => {
       expect(logCall.route).toBe('/api/data');
       expect(logCall.method).toBe('POST');
       expect(logCall.request.body).toEqual({ key: 'value' });
-      expect(logCall.source).toBe('mock');
+      expect(logCall.source).toBe('auto');
     });
 
     it('should not fail response if logging fails', async () => {
@@ -384,15 +588,12 @@ describe('MockHandler', () => {
   });
 
   describe('handle - path extraction', () => {
-    it('should strip /_it/mock prefix from path', async () => {
+    it('should strip /_it/auto prefix from path', async () => {
       mockMockService.findCandidates.mockResolvedValue([]);
-      
-      const req = createMockReq({ path: '/api/test' });
+
+      const req = createMockReq({ path: '/_it/auto/api/test' });
       const res = createMockRes();
 
-      // Simulate request coming through /_it/mock/api/test
-      req.path = '/_it/mock/api/test';
-      
       await handler.handle(req as any, res as any);
 
       const logCall = mockTrafficService.logTraffic.mock.calls[0][0];
@@ -402,7 +603,7 @@ describe('MockHandler', () => {
 
     it('should handle root path correctly', async () => {
       mockMockService.findCandidates.mockResolvedValue([]);
-      
+
       const req = createMockReq({ path: '/' });
       const res = createMockRes();
 
@@ -416,7 +617,7 @@ describe('MockHandler', () => {
   describe('handle - tenant scoping', () => {
     it('should use tenant ID from request', async () => {
       mockMockService.findCandidates.mockResolvedValue([]);
-      
+
       const req = createMockReq({
         tenant: { id: 'tenant-abc', slug: 'myteam', name: 'My Team' },
       });
@@ -429,7 +630,7 @@ describe('MockHandler', () => {
 
     it('should handle missing tenant gracefully', async () => {
       mockMockService.findCandidates.mockResolvedValue([]);
-      
+
       const req = createMockReq({ tenant: null });
       const res = createMockRes();
 

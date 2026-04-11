@@ -39,6 +39,7 @@ export { MockService, CreateMockEndpointDto, UpdateMockEndpointDto } from './mod
 export { MockController } from './modules/mock/mock.controller';
 export { createMockRouter } from './modules/mock/mock.routes';
 export { MockHandler } from './modules/mock/mock.handler';
+export { AutoHandler } from './modules/mock/auto.handler';
 export { TrafficService } from './modules/mock/traffic.service';
 export { TrafficRequest, TrafficResponse } from './entities/traffic-log.entity';
 

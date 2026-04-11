@@ -1,16 +1,16 @@
 # Project Progress
 
-> Last updated: 2026-04-09
+> Last updated: 2026-04-11
 
 ## Overall Status
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~52% (Phase 3: AI Engine in progress) |
-| **Current Phase** | Phase 2: Mock CRUD + Matching ✅ |
-| **Next Phase** | Phase 3: AI Engine |
-| **Source Files** | 28 implemented / ~20+ planned |
-| **Test Files** | 23 files (21 unit + 2 integration), 217 tests (212 unit + 5 integration) |
+| **Overall Completion** | ~72% (Phase 5: Proxy Module ✅) |
+| **Current Phase** | Phase 5: Proxy Module ✅ |
+| **Next Phase** | Phase 6: Web UI |
+| **Source Files** | 34 implemented / ~20+ planned |
+| **Test Files** | 28 files (26 unit + 2 integration), 291 tests (282 unit + 9 integration) |
 | **Active Packages** | 1 of 3 (`@intelli-mock/core` only) |
 
 ---
@@ -21,9 +21,9 @@
 |---|---|---|---|
 | **Phase 1** | Foundation | 10/10 items | ✅ Complete |
 | **Phase 2** | Mock CRUD + Matching | 6/6 items | ✅ Complete |
-| **Phase 3** | AI Engine | 0/5 items | ⬜ Not Started |
-| **Phase 4** | vm2 Sandbox | 0/4 items | ⬜ Not Started |
-| **Phase 5** | Proxy Module | 0/4 items | ⬜ Not Started |
+| **Phase 3** | AI Engine | 5/5 items | ✅ Complete |
+| **Phase 4** | vm2 Sandbox | 4/4 items | ✅ Complete |
+| **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
 | **Phase 6** | Web UI | 0/6 items | ⬜ Not Started |
 | **Phase 7** | Polish | 0/4 items | ⬜ Not Started |
 
@@ -84,6 +84,13 @@
 | Full E2E scenario (3 tests) | `test/integration/scenarios/e2e-proxy-to-mock.test.ts` | ✅ Done |
 | Integration test README | `test/integration/README.md` | ✅ Done |
 
+### Phase 5: Proxy Module 🟡
+
+| Feature | Source File | Tests | Status |
+|---|---|---|---|
+| **Proxy service** (HTTP forwarding, timeout) | `src/modules/proxy/proxy.service.ts` | `test/modules/proxy/proxy.service.test.ts` (14 tests) | ✅ Done |
+| **Automatic traffic capture** | — | — | ✅ Done (integrated in ProxyService) |
+
 ### Phase 2: Mock CRUD + Matching 🟡
 
 | Feature | Source File | Tests | Status |
@@ -117,27 +124,28 @@
 
 | Feature | Planned Source File | Planned Test File | Status |
 |---|---|---|---|
-| **AI service** (Vercel AI SDK integration) | `src/modules/ai/ai.service.ts` | `test/modules/ai/ai.service.test.ts` | ⬜ Not Started |
-| **Prompt engineering** (script generation) | `src/modules/ai/prompts.ts` | — | ⬜ Not Started |
+| **AI service** (Vercel AI SDK integration) | `src/modules/ai/ai.service.ts` | `test/modules/ai/ai.service.test.ts` (7 tests) | ✅ Done |
+| **Prompt engineering** (script generation) | `src/modules/ai/prompts.ts` | `test/modules/ai/prompts.test.ts` (11 tests) | ✅ Done |
 | **Script service** (versioning, activation) | `src/modules/script/script.service.ts` | `test/modules/script/script.service.test.ts` (15 tests) | ✅ Done |
 | **Script validator** (syntax check) | `src/modules/script/script.validator.ts` | `test/modules/script/script.validator.test.ts` (14 tests) | ✅ Done |
+| **Generate endpoint** (`POST /api/mocks/:id/generate`) | `src/modules/mock/mock.controller.ts` + `mock.routes.ts` | `test/modules/mock/mock.controller.test.ts` (7 new tests) | ✅ Done |
 
 ### Phase 4: vm2 Sandbox
 
 | Feature | Planned Source File | Planned Test File | Status |
 |---|---|---|---|
-| **Sandbox utils** (vm2 setup, context) | `src/utils/sandbox.ts` | `test/utils/sandbox.test.ts` | ⬜ Not Started |
-| **Script runner** (vm2 execution) | `src/modules/script/script.runner.ts` | `test/modules/script/script.runner.test.ts` | ⬜ Not Started |
+| **Sandbox utils** (vm2 setup, context) | `src/utils/sandbox.ts` | `test/utils/sandbox.test.ts` (18 tests) | ✅ Done |
+| **Script runner** (vm2 execution) | `src/modules/script/script.runner.ts` | `test/modules/script/script.runner.test.ts` (12 tests) | ✅ Done |
 | **Test/try endpoint** | — | — | ⬜ Not Started |
-| **Request/response context injection** | — | — | ⬜ Not Started |
+| **Request/response context injection** | — | — | ✅ Done (integrated in ScriptRunner) |
 
 ### Phase 5: Proxy Module
 
 | Feature | Planned Source File | Planned Test File | Status |
 |---|---|---|---|
-| **Proxy service** (HTTP forwarding, timeout) | `src/modules/proxy/proxy.service.ts` | `test/modules/proxy/proxy.service.test.ts` | ⬜ Not Started |
-| **Auto-endpoint** (proxy → fallback) | — | — | ⬜ Not Started |
-| **Automatic traffic capture** | — | — | ⬜ Not Started |
+| **Proxy service** (HTTP forwarding, timeout) | `src/modules/proxy/proxy.service.ts` | `test/modules/proxy/proxy.service.test.ts` (14 tests) | ✅ Done |
+| **Auto-endpoint** (proxy → fallback) | `src/modules/mock/auto.handler.ts` | `test/modules/mock/auto.handler.test.ts` (21 tests)<br>`test/modules/mock/auto.handler.integration.test.ts` (5 tests) | ✅ Done |
+| **Automatic traffic capture** | — | — | ✅ Done (integrated in ProxyService) |
 
 ### Phase 6: Web UI
 
@@ -177,7 +185,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | 🟡 Active (Phase 2 complete) | 28 | 23 (21 unit + 2 integration) |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete) | 34 | 28 (26 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | 🟡 Scaffolded (no commands) | 1 | 0 |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🔴 Does not exist | 0 | 0 |
 
@@ -185,7 +193,7 @@
 
 ## Requirements Tracking
 
-### Functional Requirements (10/20 complete)
+### Functional Requirements (13/20 complete)
 
 | # | Requirement | Status |
 |---|---|---|
@@ -202,15 +210,15 @@
 | 11 | Sample pair management API | ✅ Done |
 | 12 | AI script generation via Vercel AI SDK | ✅ Done |
 | 13 | Script versioning and activation | ✅ Done |
-| 14 | vm2 sandbox for isolated mock script execution | ⬜ Not Started |
-| 15 | Proxy module for HTTP forwarding | ⬜ Not Started |
-| 16 | Auto-endpoint: proxy first → fallback to mock | ⬜ Not Started |
+| 14 | vm2 sandbox for isolated mock script execution | ✅ Done |
+| 15 | Proxy module for HTTP forwarding | ✅ Done |
+| 16 | Auto-endpoint: proxy first → fallback to mock | ✅ Done |
 | 17 | Web UI: mock list, detail, script editor, samples | ⬜ Not Started |
 | 18 | Swagger/OpenAPI documentation at `/api-docs` | ⬜ Not Started |
 | 19 | Traffic log viewer with 1-month retention | ⬜ Not Started |
 | 20 | CLI application with `start` and `init` commands | ⬜ Not Started |
 
-### Non-Functional Requirements (3/8 complete)
+### Non-Functional Requirements (4/8 complete)
 
 | # | Requirement | Status |
 |---|---|---|
@@ -218,7 +226,7 @@
 | 2 | Unit test coverage thresholds (80% lines, 75% branches) | 🟡 Configured, not validated |
 | 3 | Full test suite executes in < 10 seconds | ⬜ Not Verified |
 | 4 | No cross-tenant data leakage | 🟡 Partial (enforced at resolver level) |
-| 5 | vm2 sandbox isolation | ⬜ Not Started |
+| 5 | vm2 sandbox isolation | ✅ Done |
 | 6 | Configurable proxy timeout (default 30s) | ⬜ Not Started |
 | 7 | Graceful server shutdown on SIGTERM/SIGINT | ✅ Done |
 | 8 | pnpm workspace monorepo with composite builds | ✅ Done |
@@ -243,6 +251,7 @@
 | sql.js | ^1.12.0 | Development database (in-memory SQLite) |
 | tsyringe | ^4.8.0 | Dependency injection |
 | typeorm | ^0.3.20 | ORM with dual-driver support |
+| vm2 | ^3.9.19 | Sandboxed script execution |
 | commander | ^13.0.0 | CLI framework (CLI package) |
 | vitest | ^4.1.4 | Test runner |
 | supertest | ^7.2.2 | HTTP testing |
@@ -252,8 +261,6 @@
 
 | Dependency | Phase | Purpose |
 |---|---|---|
-| `ai` (Vercel AI SDK) | Phase 3 | AI script generation |
-| `vm2` | Phase 4 | Sandboxed script execution |
 | `lit` | Phase 6 | Web components framework |
 | `@material/web` | Phase 6 | Material 3 UI components |
 | `codemirror` (v6) | Phase 6 | Script editor |
@@ -278,3 +285,6 @@
 | [TODO-008](tasks/done/TODO-2026-04-09-008.md) | 2026-04-09 | Mock Handler Runtime + Traffic Logging (20 new tests, 139 total) |
 | [TODO-009](tasks/done/TODO-2026-04-09-009.md) | 2026-04-09 | Sample Management API (12 new tests, 151 total) |
 | [TODO-010](tasks/done/TODO-2026-04-09-010.md) | 2026-04-09 | Traffic Service Enhancement + Tests (14 new tests, 165 total) |
+| [TODO-011](tasks/done/TODO-2026-04-11-001.md) | 2026-04-11 | vm2 Sandbox — Script Runner & Sandbox Utils (30 new tests, 251 total) |
+| [TODO-012](tasks/done/TODO-2026-04-11-002.md) | 2026-04-11 | Phase 5: Proxy Module — HTTP Forwarding & Traffic Capture (14 new tests, 265 total) |
+| [TODO-013](tasks/done/TODO-2026-04-11-001.md) | 2026-04-11 | Phase 5: Auto-Endpoint — Proxy → Fallback (26 new tests, 291 total) |

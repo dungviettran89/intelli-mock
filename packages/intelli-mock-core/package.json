@@ -25,7 +25,8 @@
     "reflect-metadata": "^0.2.0",
     "sql.js": "^1.12.0",
     "tsyringe": "^4.8.0",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "vm2": "^3.10.5"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.4.0",

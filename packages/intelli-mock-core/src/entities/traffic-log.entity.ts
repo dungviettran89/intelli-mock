@@ -14,6 +14,7 @@ export enum TrafficSource {
   MOCK = 'mock',
   PROXY = 'proxy',
   FALLBACK = 'fallback',
+  AUTO = 'auto',
 }
 
 export interface TrafficRequest {

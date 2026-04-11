@@ -2,6 +2,11 @@ import { injectable, inject } from 'tsyringe';
 import { Request, Response } from 'express';
 import { MockService, CreateMockEndpointDto, UpdateMockEndpointDto } from './mock.service';
 import { HttpMethod, MockEndpointStatus } from '../../entities/mock-endpoint.entity';
+import { AIService } from '../ai/ai.service';
+import { ScriptService, CreateScriptDto } from '../script/script.service';
+import { SampleService } from '../sample/sample.service';
+
+const MIN_SAMPLES_FOR_GENERATION = 5;
 
 /**
  * MockController handles REST API requests for mock endpoint management.
@@ -11,6 +16,9 @@ import { HttpMethod, MockEndpointStatus } from '../../entities/mock-endpoint.ent
 export class MockController {
   constructor(
     @inject(MockService) private mockService: MockService,
+    @inject(AIService) private aiService: AIService,
+    @inject(ScriptService) private scriptService: ScriptService,
+    @inject(SampleService) private sampleService: SampleService,
   ) {}
 
   /** POST /api/mocks — Create a new mock endpoint */
@@ -141,6 +149,73 @@ export class MockController {
     if (body.priority !== undefined) dto.priority = body.priority;
     if (body.status !== undefined) dto.status = body.status as MockEndpointStatus;
     return dto;
+  }
+
+  /** POST /api/mocks/:id/generate — Generate AI mock script from samples */
+  async generate(req: Request, res: Response): Promise<void> {
+    try {
+      const tenantId = this.getTenantId(req);
+      const { id: endpointId } = req.params;
+
+      if (!endpointId) {
+        res.status(400).json({ error: 'Bad request', message: 'id parameter is required' });
+        return;
+      }
+
+      // Verify endpoint belongs to tenant
+      const endpoint = await this.mockService.findById(tenantId, endpointId);
+      if (!endpoint) {
+        res.status(404).json({ error: 'Not found', message: 'Mock endpoint not found' });
+        return;
+      }
+
+      // Check minimum sample count
+      const sampleCount = await this.sampleService.countByEndpoint(endpointId, tenantId);
+      if (sampleCount < MIN_SAMPLES_FOR_GENERATION) {
+        res.status(503).json({
+          error: 'Not enough samples',
+          message: `Need at least ${MIN_SAMPLES_FOR_GENERATION} samples to generate a script`,
+          current: sampleCount,
+        });
+        return;
+      }
+
+      // Fetch all samples for AI prompt
+      const samples = await this.sampleService.findAll(tenantId);
+      const endpointSamples = samples.filter((s) => s.endpointId === endpointId);
+
+      // Generate script via AI
+      const generated = await this.aiService.generateScript({
+        samples: endpointSamples,
+        pathPattern: endpoint.pathPattern,
+        method: endpoint.method,
+        promptExtra: endpoint.promptExtra ?? undefined,
+      });
+
+      // Save as new script version
+      const createDto: CreateScriptDto = {
+        endpointId,
+        code: generated.code,
+        aiModel: generated.model,
+        aiPrompt: undefined, // AI service already composed the prompt internally
+      };
+      const script = await this.scriptService.create(tenantId, createDto);
+
+      res.status(201).json({
+        code: generated.code,
+        version: script.version,
+        model: generated.model,
+        promptTokens: generated.promptTokens,
+        completionTokens: generated.completionTokens,
+        totalTokens: generated.totalTokens,
+        validationError: script.validationError,
+      });
+    } catch (err) {
+      res.status(502).json({
+        error: 'AI generation failed',
+        message: this.messageOf(err),
+      });
+    }
   }
 
   private messageOf(err: unknown): string {

@@ -7,6 +7,7 @@ import { createMockRouter } from './modules/mock/mock.routes';
 import { createSampleRouter } from './modules/sample/sample.routes';
 import { container } from 'tsyringe';
 import { MockHandler } from './modules/mock/mock.handler';
+import { AutoHandler } from './modules/mock/auto.handler';
 
 /**
  * Creates and configures an Express application instance.
@@ -60,6 +61,10 @@ export async function createApp(): Promise<Application> {
   // Runtime mock handler — serves mock requests at /_it/mock/*
   const mockHandler = container.resolve(MockHandler);
   app.all('/_it/mock/*', (req: Request, res: Response) => mockHandler.handle(req, res));
+
+  // Runtime auto handler — serves auto-endpoint requests at /_it/auto/* (proxy → fallback)
+  const autoHandler = container.resolve(AutoHandler);
+  app.all('/_it/auto/*', (req: Request, res: Response) => autoHandler.handle(req, res));
 
   console.log(`[Config] Server on port ${config.server.port}, env: ${config.server.nodeEnv}`);
 

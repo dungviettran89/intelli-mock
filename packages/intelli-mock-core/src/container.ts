@@ -10,6 +10,7 @@ import { SampleController } from './modules/sample/sample.controller';
 import { ScriptService } from './modules/script/script.service';
 import { ScriptValidator } from './modules/script/script.validator';
 import { AIService } from './modules/ai/ai.service';
+import { ProxyService } from './modules/proxy/proxy.service';
 import { createAuthMiddleware } from './core/auth/jwt.middleware';
 
 /**
@@ -31,6 +32,7 @@ export function configureContainer() {
   container.registerSingleton(ScriptService);
   container.registerSingleton(ScriptValidator);
   container.registerSingleton(AIService);
+  container.registerSingleton(ProxyService);
 
   // Factory for auth middleware (depends on TenantResolver instance)
   container.register('AuthMiddleware', {
