@@ -91,13 +91,20 @@ export class MockList extends LitElement {
   `;
 
   @state()
-  private _mocks: MockEndpoint[] = [];
+  private declare _mocks: MockEndpoint[];
 
   @state()
-  private _loading = true;
+  private declare _loading: boolean;
 
   @state()
-  private _error: string | null = null;
+  private declare _error: string | null;
+
+  constructor() {
+    super();
+    this._mocks = [];
+    this._loading = true;
+    this._error = null;
+  }
 
   override connectedCallback(): void {
     super.connectedCallback();

@@ -178,22 +178,32 @@ export class MockDetail extends LitElement {
 
   /** Mock endpoint ID to display. */
   @property({ type: String })
-  mockId = '';
+  declare mockId: string;
 
   @state()
-  private _mock: MockEndpoint | null = null;
+  private declare _mock: MockEndpoint | null;
 
   @state()
-  private _loading = true;
+  private declare _loading: boolean;
 
   @state()
-  private _error: string | null = null;
+  private declare _error: string | null;
 
   @state()
-  private _generating = false;
+  private declare _generating: boolean;
 
   @state()
-  private _generateResult: { success: boolean; message: string } | null = null;
+  private declare _generateResult: { success: boolean; message: string } | null;
+
+  constructor() {
+    super();
+    this.mockId = '';
+    this._mock = null;
+    this._loading = true;
+    this._error = null;
+    this._generating = false;
+    this._generateResult = null;
+  }
 
   override connectedCallback(): void {
     super.connectedCallback();
