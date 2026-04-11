@@ -1,16 +1,16 @@
 # Project Progress
 
-> Last updated: 2026-04-11
+> Last updated: 2026-04-12
 
 ## Overall Status
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~89% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅) |
+| **Overall Completion** | ~91% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 46 implemented / ~19+ planned |
-| **Test Files** | 32 files (322 unit + 10 integration + 7 CLI E2E), 339 tests total |
+| **Source Files** | 52 implemented / ~19+ planned |
+| **Test Files** | 36 files (322 unit + 10 integration + 7 CLI E2E + 3 Playwright E2E), 342 tests total |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
 ---
@@ -160,6 +160,8 @@
 | **Sample management UI** | `packages/intelli-mock-ui/src/components/sample-editor.ts` | ⬜ Not Started |
 | **Try-it panel** | `packages/intelli-mock-ui/src/components/try-it.ts` | ⬜ Not Started |
 | **Traffic log viewer** | `packages/intelli-mock-ui/src/components/traffic-viewer.ts` | ⬜ Not Started |
+| **Playwright E2E infrastructure** | `packages/intelli-mock-ui/test/` | ✅ Done |
+| **Auth bypass for E2E tests** | `packages/intelli-mock-core/src/config/env.ts`, `app.ts` | ✅ Done |
 
 ### Phase 7: Polish
 
