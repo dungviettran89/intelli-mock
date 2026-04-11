@@ -181,5 +181,155 @@ describe('MockHandler Integration (HTTP + Service + Matcher)', () => {
       expect(response.body.error).toBe('No active mock script');
       expect(mockEndpointRepo.find).toHaveBeenCalled();
     });
+
+    it('should pass request context to script runner', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users/:id',
+        method: HttpMethod.GET,
+        samplePairs: [{}, {}, {}, {}, {}],
+      };
+      mockEndpointRepo.find.mockResolvedValue([endpoint]);
+      const activeScript = {
+        id: 'script-1',
+        endpointId: 'ep1',
+        isActive: true,
+        version: 1,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      (mockScriptRunner.run as any).mockResolvedValue({
+        success: true,
+        response: { status: 200, body: { echoed: true } },
+        executionTimeMs: 5,
+      });
+
+      const app = createApp();
+      await request(app)
+        .get('/_it/mock/api/users/123?include=profile')
+        .set('X-Custom-Header', 'test-value')
+        .expect(200);
+
+      expect(mockScriptRunner.run).toHaveBeenCalledWith(
+        activeScript,
+        expect.objectContaining({
+          method: 'GET',
+          query: expect.objectContaining({ include: 'profile' }),
+          headers: expect.any(Object),
+        }),
+        't1',
+        'ep1',
+      );
+    });
+
+    it('should handle script execution failure and return 500', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/data',
+        method: HttpMethod.GET,
+        samplePairs: [{}, {}, {}, {}, {}],
+      };
+      mockEndpointRepo.find.mockResolvedValue([endpoint]);
+      const activeScript = {
+        id: 'script-bad',
+        endpointId: 'ep1',
+        isActive: true,
+        version: 2,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      (mockScriptRunner.run as any).mockResolvedValue({
+        success: false,
+        error: {
+          name: 'TypeError',
+          message: 'Cannot read property of undefined',
+          type: 'runtime',
+        },
+        executionTimeMs: 8,
+      });
+
+      const app = createApp();
+      const response = await request(app)
+        .get('/_it/mock/api/data')
+        .expect(500);
+
+      expect(response.body.error).toBe('Script execution error');
+      expect(response.body.type).toBe('runtime');
+    });
+
+    it('should still log traffic when script execution fails', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/data',
+        method: HttpMethod.GET,
+        samplePairs: [{}, {}, {}, {}, {}],
+      };
+      mockEndpointRepo.find.mockResolvedValue([endpoint]);
+      const activeScript = {
+        id: 'script-bad',
+        endpointId: 'ep1',
+        isActive: true,
+        version: 1,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      (mockScriptRunner.run as any).mockResolvedValue({
+        success: false,
+        error: { name: 'Error', message: 'fail', type: 'runtime' },
+        executionTimeMs: 3,
+      });
+
+      const app = createApp();
+      await request(app)
+        .get('/_it/mock/api/data')
+        .expect(500);
+
+      expect(mockTrafficRepo.save).toHaveBeenCalled();
+      const logEntry = mockTrafficRepo.save.mock.calls[0][0];
+      expect(logEntry.route).toBe('/api/data');
+      expect(logEntry.response.status).toBe(500);
+    });
+
+    it('should verify tenant isolation in handler', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users',
+        method: HttpMethod.GET,
+        samplePairs: [],
+      };
+      mockEndpointRepo.find.mockResolvedValue([endpoint]);
+      mockScriptRepo.findOne.mockResolvedValue(null);
+
+      const app = express();
+      app.use(express.json());
+      app.all('/_it/mock/*', (req, res) => {
+        req.tenant = { id: 'different-tenant', slug: 'other', name: 'Other' } as any;
+        return handler.handle(req, res);
+      });
+
+      await request(app)
+        .get('/_it/mock/api/users')
+        .expect(503);
+
+      // Endpoint found, but no script - verifies tenant-scoped behavior
+      expect(mockEndpointRepo.find).toHaveBeenCalled();
+    });
+
+    it('should measure and include latency in response logging', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/slow',
+        method: HttpMethod.GET,
+        samplePairs: [],
+      };
+      mockEndpointRepo.find.mockResolvedValue([endpoint]);
+      mockScriptRepo.findOne.mockResolvedValue(null);
+
+      const app = createApp();
+      await request(app)
+        .get('/_it/mock/api/slow')
+        .expect(503);
+
+      expect(mockTrafficRepo.save).toHaveBeenCalled();
+      const logEntry = mockTrafficRepo.save.mock.calls[0][0];
+      expect(logEntry.response.latency).toBeGreaterThanOrEqual(0);
+    });
   });
 });

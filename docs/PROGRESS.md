@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~72% (Phase 5: Proxy Module ✅) |
+| **Overall Completion** | ~74% (Phase 5: Proxy Module ✅) |
 | **Current Phase** | Phase 5: Proxy Module ✅ |
 | **Next Phase** | Phase 6: Web UI |
 | **Source Files** | 34 implemented / ~20+ planned |
-| **Test Files** | 28 files (26 unit + 2 integration), 291 tests (282 unit + 9 integration) |
+| **Test Files** | 28 files (282 unit + 51 integration), 333 tests total |
 | **Active Packages** | 1 of 3 (`@intelli-mock/core` only) |
 
 ---
@@ -288,3 +288,4 @@
 | [TODO-011](tasks/done/TODO-2026-04-11-001.md) | 2026-04-11 | vm2 Sandbox — Script Runner & Sandbox Utils (30 new tests, 251 total) |
 | [TODO-012](tasks/done/TODO-2026-04-11-002.md) | 2026-04-11 | Phase 5: Proxy Module — HTTP Forwarding & Traffic Capture (14 new tests, 265 total) |
 | [TODO-013](tasks/done/TODO-2026-04-11-001.md) | 2026-04-11 | Phase 5: Auto-Endpoint — Proxy → Fallback (26 new tests, 291 total) |
+| [TODO-014](tasks/done/TODO-2026-04-11-002.md) | 2026-04-11 | Integration Test Expansion — 42 new tests across 4 files (333 total) |

@@ -227,4 +227,158 @@ describe('AutoHandler Integration (HTTP + Service + Matcher)', () => {
       expect(response.body.error).toBe('Auto endpoint not found');
     });
   });
+
+  describe('GET /_it/auto/* - traffic logging', () => {
+    it('should log traffic when proxy succeeds', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users/:id',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: true,
+        status: 200,
+        body: { id: '1' },
+      });
+
+      await request(app)
+        .get('/_it/auto/api/users/1')
+        .expect(200);
+
+      expect(mockTrafficService.logTraffic).toHaveBeenCalled();
+      const logCall = mockTrafficService.logTraffic.mock.calls[0][0];
+      expect(logCall.route).toBe('/api/users/1');
+      expect(logCall.method).toBe('GET');
+      expect(logCall.source).toBe('auto');
+    });
+
+    it('should log traffic when falling back to mock', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users/:id',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: false,
+        error: { message: 'Timeout' },
+      });
+
+      const activeScript = {
+        id: 'script-1',
+        endpointId: 'ep1',
+        isActive: true,
+        version: 1,
+      };
+      mockScriptRepo.findOne.mockResolvedValue(activeScript);
+      mockScriptRunner.run.mockResolvedValue({
+        success: true,
+        response: { status: 200, body: { fallback: true } },
+        executionTimeMs: 10,
+      });
+
+      await request(app)
+        .get('/_it/auto/api/users/1')
+        .expect(200);
+
+      expect(mockTrafficService.logTraffic).toHaveBeenCalled();
+      const logCall = mockTrafficService.logTraffic.mock.calls[0][0];
+      expect(logCall.route).toBe('/api/users/1');
+      expect(logCall.response.status).toBe(200);
+    });
+
+    it('should include latency in traffic logs', async () => {
+      mockMockService.findCandidates.mockResolvedValue([]);
+
+      await request(app)
+        .get('/_it/auto/api/unknown')
+        .expect(404);
+
+      expect(mockTrafficService.logTraffic).toHaveBeenCalled();
+      const logCall = mockTrafficService.logTraffic.mock.calls[0][0];
+      expect(logCall.response.latency).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('GET /_it/auto/* - multiple endpoints', () => {
+    it('should handle different endpoints with different proxy configs', async () => {
+      // First request: endpoint with proxy
+      const endpoint1 = {
+        id: 'ep1',
+        pathPattern: '/api/users/:id',
+        method: HttpMethod.GET,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint1]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint: endpoint1 });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: true,
+        status: 200,
+        body: { user: 'Alice' },
+      });
+
+      let response = await request(app)
+        .get('/_it/auto/api/users/1')
+        .expect(200);
+      expect(response.body).toEqual({ user: 'Alice' });
+
+      // Second request: different endpoint not found
+      mockMockService.findCandidates.mockResolvedValue([]);
+      mockRouteMatcher.match.mockReturnValue(null);
+      
+      response = await request(app)
+        .get('/_it/auto/api/other')
+        .expect(404);
+      expect(response.body.error).toBe('Auto endpoint not found');
+    });
+  });
+
+  describe('GET /_it/auto/* - POST requests', () => {
+    it('should forward POST requests with body to proxy', async () => {
+      const endpoint = {
+        id: 'ep1',
+        pathPattern: '/api/users',
+        method: HttpMethod.POST,
+        priority: 0,
+        proxyUrl: 'https://api.example.com/users',
+        samplePairs: [],
+      };
+      mockMockService.findCandidates.mockResolvedValue([endpoint]);
+      mockRouteMatcher.match.mockReturnValue({ endpoint });
+      mockProxyService.forwardRequest.mockResolvedValue({
+        success: true,
+        status: 201,
+        body: { created: true, id: 'new-user' },
+      });
+
+      const response = await request(app)
+        .post('/_it/auto/api/users')
+        .send({ name: 'New User', email: 'user@example.com' })
+        .expect(201);
+
+      expect(response.body).toEqual({ created: true, id: 'new-user' });
+      expect(mockProxyService.forwardRequest).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          method: 'POST',
+          body: { name: 'New User', email: 'user@example.com' },
+        }),
+        expect.any(String),
+        expect.any(String),
+        expect.any(String),
+        expect.any(String),
+      );
+    });
+  });
 });
