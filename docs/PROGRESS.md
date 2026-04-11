@@ -6,12 +6,12 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~75% (Phase 4: vm2 Sandbox ✅) |
-| **Current Phase** | Phase 4: vm2 Sandbox ✅ |
-| **Next Phase** | Phase 6: Web UI |
-| **Source Files** | 37 implemented / ~20+ planned |
+| **Overall Completion** | ~80% (Phase 6: Web UI 🟡 Started) |
+| **Current Phase** | Phase 6: Web UI 🟡 In Progress |
+| **Next Phase** | Phase 7: Polish |
+| **Source Files** | 41 implemented / ~20+ planned |
 | **Test Files** | 29 files (322 unit + 10 integration), 332 tests total |
-| **Active Packages** | 1 of 3 (`@intelli-mock/core` only) |
+| **Active Packages** | 2 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`) |
 
 ---
 
@@ -24,7 +24,7 @@
 | **Phase 3** | AI Engine | 5/5 items | ✅ Complete |
 | **Phase 4** | vm2 Sandbox | 4/4 items | ✅ Complete |
 | **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
-| **Phase 6** | Web UI | 0/6 items | ⬜ Not Started |
+| **Phase 6** | Web UI | 2/6 items | 🟡 In Progress |
 | **Phase 7** | Polish | 0/4 items | ⬜ Not Started |
 
 ---
@@ -151,9 +151,9 @@
 
 | Feature | Planned Source File | Status |
 |---|---|---|
-| **Package scaffold** (Lit Element + Vite) | `packages/intelli-mock-ui/` | ⬜ Not Started |
-| **API service** (HTTP client) | `packages/intelli-mock-ui/src/services/api.ts` | ⬜ Not Started |
-| **Mock list view** | `packages/intelli-mock-ui/src/components/mock-list.ts` | ⬜ Not Started |
+| **Package scaffold** (Lit Element + Vite) | `packages/intelli-mock-ui/` | ✅ Done |
+| **API service** (HTTP client) | `packages/intelli-mock-ui/src/services/api.ts` | ✅ Done |
+| **Mock list view** | `packages/intelli-mock-ui/src/components/mock-list.ts` | ✅ Done |
 | **Mock detail view** | `packages/intelli-mock-ui/src/components/mock-detail.ts` | ⬜ Not Started |
 | **Script editor** (CodeMirror 6) | `packages/intelli-mock-ui/src/components/script-editor.ts` | ⬜ Not Started |
 | **Sample management UI** | `packages/intelli-mock-ui/src/components/sample-editor.ts` | ⬜ Not Started |
@@ -187,7 +187,7 @@
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete) | 34 | 28 (26 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | 🟡 Scaffolded (no commands) | 1 | 0 |
-| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🔴 Does not exist | 0 | 0 |
+| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6 started) | 3 | 0 |
 
 ---
 
@@ -213,7 +213,7 @@
 | 14 | vm2 sandbox for isolated mock script execution | ✅ Done |
 | 15 | Proxy module for HTTP forwarding | ✅ Done |
 | 16 | Auto-endpoint: proxy first → fallback to mock | ✅ Done |
-| 17 | Web UI: mock list, detail, script editor, samples | ⬜ Not Started |
+| 17 | Web UI: mock list, detail, script editor, samples | 🟡 Partial (package scaffolded, mock list done) |
 | 18 | Swagger/OpenAPI documentation at `/api-docs` | ⬜ Not Started |
 | 19 | Traffic log viewer with 1-month retention | ⬜ Not Started |
 | 20 | CLI application with `start` and `init` commands | ⬜ Not Started |
@@ -257,14 +257,19 @@
 | supertest | ^7.2.2 | HTTP testing |
 | @faker-js/faker | ^10.4.0 | Test data generation |
 
+### Installed (UI)
+
+| Dependency | Version | Package | Purpose |
+|---|---|---|---|
+| `lit` | ^3.2.0 | `@intelli-mock/ui` | Web components framework |
+| `@material/web` | ^2.3.0 | `@intelli-mock/ui` | Material 3 UI components |
+| `vite` | ^6.0.0 | `@intelli-mock/ui` (dev) | UI bundler |
+
 ### Needed for Future Phases
 
 | Dependency | Phase | Purpose |
 |---|---|---|
-| `lit` | Phase 6 | Web components framework |
-| `@material/web` | Phase 6 | Material 3 UI components |
 | `codemirror` (v6) | Phase 6 | Script editor |
-| `vite` | Phase 6 | UI bundler |
 | `swagger-ui-express` or `swagger-jsdoc` | Phase 7 | OpenAPI docs |
 | `ts-mockito` | Testing | Type-safe test mocking |
 | `jsrsasign` | Testing | Test JWT key generation |
@@ -289,3 +294,4 @@
 | [TODO-012](tasks/done/TODO-2026-04-11-002.md) | 2026-04-11 | Phase 5: Proxy Module — HTTP Forwarding & Traffic Capture (14 new tests, 265 total) |
 | [TODO-013](tasks/done/TODO-2026-04-11-001.md) | 2026-04-11 | Phase 5: Auto-Endpoint — Proxy → Fallback (26 new tests, 291 total) |
 | [TODO-014](tasks/done/TODO-2026-04-11-002.md) | 2026-04-11 | Integration Test Expansion — 42 new tests across 4 files (333 total) |
+| [TODO-015](tasks/done/TODO-2026-04-11-004.md) | 2026-04-11 | Phase 6: Web UI — Package Scaffold + Mock List Component |
