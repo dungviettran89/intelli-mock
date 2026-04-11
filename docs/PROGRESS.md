@@ -6,10 +6,10 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~91% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅) |
+| **Overall Completion** | ~92% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 52 implemented / ~19+ planned |
+| **Source Files** | 53 implemented / ~18+ planned |
 | **Test Files** | 36 files (322 unit + 10 integration + 7 CLI E2E + 3 Playwright E2E), 342 tests total |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -24,7 +24,7 @@
 | **Phase 3** | AI Engine | 5/5 items | ✅ Complete |
 | **Phase 4** | vm2 Sandbox | 4/4 items | ✅ Complete |
 | **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
-| **Phase 6** | Web UI | 2/6 items | 🟡 In Progress |
+| **Phase 6** | Web UI | 3/6 items | 🟡 In Progress |
 | **Phase 7** | Polish | 0/4 items | ⬜ Not Started |
 | **CLI Application** | Start Command + E2E Tests | 6/6 items | ✅ Complete |
 
@@ -156,7 +156,7 @@
 | **API service** (HTTP client) | `packages/intelli-mock-ui/src/services/api.ts` | ✅ Done |
 | **Mock list view** | `packages/intelli-mock-ui/src/components/mock-list.ts` | ✅ Done |
 | **Mock detail view** | `packages/intelli-mock-ui/src/components/mock-detail.ts` | ✅ Done |
-| **Script editor** (CodeMirror 6) | `packages/intelli-mock-ui/src/components/script-editor.ts` | ⬜ Not Started |
+| **Script editor** (CodeMirror 6) | `packages/intelli-mock-ui/src/components/script-editor.ts` | ✅ Done |
 | **Sample management UI** | `packages/intelli-mock-ui/src/components/sample-editor.ts` | ⬜ Not Started |
 | **Try-it panel** | `packages/intelli-mock-ui/src/components/try-it.ts` | ⬜ Not Started |
 | **Traffic log viewer** | `packages/intelli-mock-ui/src/components/traffic-viewer.ts` | ⬜ Not Started |
@@ -192,7 +192,7 @@
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete) | 34 | 28 (26 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start command + E2E tests complete) | 3 | 3 (7 E2E tests) |
-| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Mock Detail ✅) | 4 | 0 |
+| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅) | 5 | 0 |
 
 ---
 
@@ -269,12 +269,14 @@
 | `lit` | ^3.2.0 | `@intelli-mock/ui` | Web components framework |
 | `@material/web` | ^2.3.0 | `@intelli-mock/ui` | Material 3 UI components |
 | `vite` | ^6.0.0 | `@intelli-mock/ui` (dev) | UI bundler |
+| `codemirror` | ^6.0.2 | `@intelli-mock/ui` | Script editor (CodeMirror 6) |
+| `@codemirror/lang-javascript` | ^6.2.5 | `@intelli-mock/ui` | JS syntax highlighting |
+| `@codemirror/theme-one-dark` | ^6.1.3 | `@intelli-mock/ui` | Dark theme for editor |
 
 ### Needed for Future Phases
 
 | Dependency | Phase | Purpose |
 |---|---|---|
-| `codemirror` (v6) | Phase 6 | Script editor |
 | `swagger-ui-express` or `swagger-jsdoc` | Phase 7 | OpenAPI docs |
 | `ts-mockito` | Testing | Type-safe test mocking |
 | `jsrsasign` | Testing | Test JWT key generation |
@@ -300,3 +302,4 @@
 | [TODO-013](tasks/done/TODO-2026-04-11-001.md) | 2026-04-11 | Phase 5: Auto-Endpoint — Proxy → Fallback (26 new tests, 291 total) |
 | [TODO-014](tasks/done/TODO-2026-04-11-002.md) | 2026-04-11 | Integration Test Expansion — 42 new tests across 4 files (333 total) |
 | [TODO-015](tasks/done/TODO-2026-04-11-004.md) | 2026-04-11 | Phase 6: Web UI — Package Scaffold + Mock List Component |
+| [TODO-016](tasks/done/TODO-2026-04-12-003.md) | 2026-04-12 | Phase 6: Web UI — Script Editor (CodeMirror 6) |

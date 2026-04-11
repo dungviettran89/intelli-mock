@@ -6,6 +6,7 @@ import '@material/web/progress/circular-progress';
 import '@material/web/icon/icon';
 import '@material/web/divider/divider';
 import type { MockEndpoint } from '../services/api.js';
+import './script-editor.js';
 
 /**
  * Mock Detail component — displays a single mock endpoint's full information.
@@ -195,6 +196,18 @@ export class MockDetail extends LitElement {
   @state()
   private declare _generateResult: { success: boolean; message: string } | null;
 
+  @state()
+  private declare _scriptCode: string;
+
+  @state()
+  private declare _editingScript: boolean;
+
+  @state()
+  private declare _savingScript: boolean;
+
+  @state()
+  private declare _saveScriptResult: { success: boolean; message: string } | null;
+
   constructor() {
     super();
     this.mockId = '';
@@ -203,6 +216,10 @@ export class MockDetail extends LitElement {
     this._error = null;
     this._generating = false;
     this._generateResult = null;
+    this._scriptCode = '';
+    this._editingScript = false;
+    this._savingScript = false;
+    this._saveScriptResult = null;
   }
 
   override connectedCallback(): void {
@@ -222,6 +239,9 @@ export class MockDetail extends LitElement {
     this._loading = true;
     this._error = null;
     this._generateResult = null;
+    this._scriptCode = '';
+    this._editingScript = false;
+    this._saveScriptResult = null;
     try {
       const res = await fetch(`/api/mocks/${this.mockId}`);
       if (!res.ok) {
@@ -279,6 +299,38 @@ export class MockDetail extends LitElement {
     } finally {
       this._generating = false;
     }
+  }
+
+  private async _onSaveScript(code: string): Promise<void> {
+    if (!this._mock) return;
+    this._savingScript = true;
+    this._saveScriptResult = null;
+    try {
+      const res = await fetch(`/api/mocks/${this._mock.id}/script`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      if (!res.ok) {
+        const body = await res.json() as Record<string, unknown>;
+        throw new Error((body.error as string) || 'Failed to save script');
+      }
+      this._saveScriptResult = { success: true, message: 'Script saved successfully' };
+      this._editingScript = false;
+      void this._fetchMock();
+    } catch (err) {
+      this._saveScriptResult = {
+        success: false,
+        message: err instanceof Error ? err.message : 'Failed to save script',
+      };
+    } finally {
+      this._savingScript = false;
+    }
+  }
+
+  private _onToggleEditScript(): void {
+    this._editingScript = !this._editingScript;
+    this._saveScriptResult = null;
   }
 
   override render() {
@@ -397,6 +449,26 @@ export class MockDetail extends LitElement {
           ${this._generateResult.message}
         </div>
       ` : ''}
+
+      <div class="card" style="margin-top:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <h3 style="margin:0;font-size:16px;font-weight:500;">Mock Script</h3>
+          <md-outlined-button @click=${this._onToggleEditScript} ?disabled=${this._savingScript}>
+            <md-icon slot="icon">${this._editingScript ? 'close' : 'edit'}</md-icon>
+            ${this._editingScript ? 'Cancel' : 'Edit Script'}
+          </md-outlined-button>
+        </div>
+        <script-editor
+          .code=${this._scriptCode}
+          .readonly=${!this._editingScript}
+          .onSave=${this._onSaveScript.bind(this)}
+        ></script-editor>
+        ${this._saveScriptResult ? html`
+          <div class="result-box ${this._saveScriptResult.success ? 'result-success' : 'result-error'}" style="margin-top:8px;">
+            ${this._saveScriptResult.message}
+          </div>
+        ` : ''}
+      </div>
     `;
   }
 }
