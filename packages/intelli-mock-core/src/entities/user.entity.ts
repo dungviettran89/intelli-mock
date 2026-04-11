@@ -28,7 +28,7 @@ export class User {
   @Column({ length: 255 })
   sub!: string;
 
-  @Column({ length: 255, nullable: true })
+  @Column({ length: 255, type: 'varchar', nullable: true })
   email: string | null = null;
 
   @Column({ type: 'simple-json', default: () => "'[\"user\"]'" })

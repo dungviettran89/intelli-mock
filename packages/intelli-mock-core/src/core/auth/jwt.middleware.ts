@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { verify, JsonWebTokenError, TokenExpiredError, NotBeforeError } from 'jsonwebtoken';
 import { getConfig } from '../../config/env';
 import { TenantResolver, JwtPayload } from './user-resolver';
+import { Tenant } from '../../entities/tenant.entity';
+import { User } from '../../entities/user.entity';
+import { getDataSource } from '../../database/data-source';
 
 /**
  * Express middleware that verifies an asymmetric JWT token (RS256/ES256),
@@ -13,6 +16,45 @@ import { TenantResolver, JwtPayload } from './user-resolver';
 export function createAuthMiddleware(resolver: TenantResolver) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const config = getConfig();
+    
+    // Skip auth if disabled - create a default dev tenant
+    if (process.env.AUTH_DISABLED === 'true') {
+      try {
+        const dataSource = getDataSource();
+        const tenantRepo = dataSource.getRepository(Tenant);
+        const userRepo = dataSource.getRepository(User);
+        
+        // Find or create a default dev tenant
+        let tenant = await tenantRepo.findOne({ where: { slug: 'dev' } });
+        if (!tenant) {
+          tenant = tenantRepo.create({
+            slug: 'dev',
+            name: 'Development Tenant',
+          });
+          await tenantRepo.save(tenant);
+        }
+        
+        // Find or create a default dev user
+        let user = await userRepo.findOne({ where: { sub: 'dev-user', tenantId: tenant.id } });
+        if (!user) {
+          user = userRepo.create({
+            sub: 'dev-user',
+            tenantId: tenant.id,
+            roles: ['user', 'admin'],
+          });
+          await userRepo.save(user);
+        }
+        
+        req.tenant = tenant;
+        req.user = user;
+        next();
+      } catch (err) {
+        console.error('[Auth] Failed to create default dev tenant:', err);
+        res.status(500).json({ error: 'Internal server error', message: 'Failed to initialize dev tenant' });
+      }
+      return;
+    }
+
     const authHeader = req.headers.authorization;
 
     // Extract token

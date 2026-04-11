@@ -53,7 +53,7 @@ export class MockEndpoint {
   @Column({ type: 'simple-enum', enum: HttpMethod, default: HttpMethod.ANY })
   method!: HttpMethod;
 
-  @Column({ name: 'proxy_url', length: 2048, nullable: true })
+  @Column({ name: 'proxy_url', type: 'varchar', length: 2048, nullable: true })
   proxyUrl: string | null = null;
 
   @Column({ name: 'proxy_timeout_ms', type: 'int', nullable: true })

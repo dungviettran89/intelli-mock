@@ -8,11 +8,15 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config test/vitest.config.ts"
   },
   "dependencies": {
     "commander": "^13.0.0",
     "@intelli-mock/core": "workspace:*"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "vitest": "^4.1.4"
+  }
 }

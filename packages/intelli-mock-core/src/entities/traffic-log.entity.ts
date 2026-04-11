@@ -48,14 +48,14 @@ export class TrafficLog {
   @JoinColumn({ name: 'tenant_id' })
   tenant: Tenant | null = null;
 
-  @Column({ name: 'tenant_id', nullable: true })
+  @Column({ name: 'tenant_id', type: 'varchar', nullable: true })
   tenantId: string | null = null;
 
   @ManyToOne(() => MockEndpoint, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'endpoint_id' })
   endpoint: MockEndpoint | null = null;
 
-  @Column({ name: 'endpoint_id', nullable: true })
+  @Column({ name: 'endpoint_id', type: 'varchar', nullable: true })
   endpointId: string | null = null;
 
   @Column({ length: 255 })

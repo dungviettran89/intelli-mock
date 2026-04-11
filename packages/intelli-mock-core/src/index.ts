@@ -1,8 +1,8 @@
 // App
-export { createApp, attachErrorHandler } from './app';
+export { createApp, attachErrorHandler, AppOptions } from './app';
 
 // Server
-export { startServer, stopServer } from './server';
+export { startServer, stopServer, stopApp } from './server';
 
 // Database
 export {

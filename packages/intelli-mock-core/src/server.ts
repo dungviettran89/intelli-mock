@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { createApp, attachErrorHandler } from './app';
+import { createApp, attachErrorHandler, AppOptions } from './app';
 import { closeDataSource } from './database/data-source';
 import { getConfig } from './config/env';
 
@@ -8,8 +8,8 @@ let server: ReturnType<Application['listen']> | null = null;
 /**
  * Starts the Express HTTP server and sets up graceful shutdown handlers.
  */
-export async function startServer(): Promise<void> {
-  const app = await createApp();
+export async function startServer(options: AppOptions = {}): Promise<void> {
+  const app = await createApp(options);
 
   // Attach error handler after all routes (currently none, but ready for Phase 2)
   attachErrorHandler(app);
@@ -57,6 +57,30 @@ export async function stopServer(): Promise<void> {
     console.log('[Server] HTTP server closed.');
   }
 
+  await closeDataSource();
+}
+
+/**
+ * Stops the app immediately without waiting for connections to close.
+ * Used for testing.
+ */
+export async function stopApp(): Promise<void> {
+  if (server) {
+    return new Promise<void>((resolve) => {
+      server!.close(() => {
+        server = null;
+        resolve();
+      });
+      // Force close after 1 second
+      setTimeout(() => {
+        if (server) {
+          server.closeAllConnections?.();
+          server = null;
+        }
+        resolve();
+      }, 1000);
+    });
+  }
   await closeDataSource();
 }
 

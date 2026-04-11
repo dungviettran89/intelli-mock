@@ -10,11 +10,16 @@ import { container } from 'tsyringe';
 import { MockHandler } from './modules/mock/mock.handler';
 import { AutoHandler } from './modules/mock/auto.handler';
 
+export interface AppOptions {
+  /** Absolute path to the UI dist directory to serve static files. If not provided, UI will not be served. */
+  uiDistPath?: string;
+}
+
 /**
  * Creates and configures an Express application instance.
  * Initializes TypeORM DataSource and DI container during startup.
  */
-export async function createApp(): Promise<Application> {
+export async function createApp(options: AppOptions = {}): Promise<Application> {
   const app = express();
 
   // Initialize database
@@ -69,6 +74,28 @@ export async function createApp(): Promise<Application> {
   // Runtime auto handler — serves auto-endpoint requests at /_it/auto/* (proxy → fallback)
   const autoHandler = container.resolve(AutoHandler);
   app.all('/_it/auto/*', (req: Request, res: Response) => autoHandler.handle(req, res));
+
+  // Serve UI static files (if path provided and exists)
+  if (options.uiDistPath) {
+    const { existsSync } = await import('fs');
+    const { join } = await import('path');
+    if (existsSync(options.uiDistPath)) {
+      app.use(express.static(options.uiDistPath));
+
+      // Serve index.html for all non-API routes (SPA fallback)
+      app.use((req: Request, res: Response, next: NextFunction) => {
+        if (
+          !req.path.startsWith('/api/') &&
+          !req.path.startsWith('/_it/') &&
+          !req.path.includes('.')
+        ) {
+          res.sendFile(join(options.uiDistPath!, 'index.html'));
+        } else {
+          next();
+        }
+      });
+    }
+  }
 
   console.log(`[Config] Server on port ${config.server.port}, env: ${config.server.nodeEnv}`);
 

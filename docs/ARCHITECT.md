@@ -69,6 +69,7 @@ AI-powered API mocking platform for teams. Users provide sample requests/respons
 | **Web UI** | Lit Element + `@material/web` | Material 3 web components, thin UI |
 | **API Docs** | Swagger / OpenAPI 3.0 | Served at `/api-docs` |
 | **Testing** | Vitest + supertest | 100% offline, fully mocked unit tests |
+| **E2E UI Testing** | Playwright | Browser-based validation of Lit Element + Material Web |
 | **Mocking** | Vitest built-in + ts-mockito | Type-safe mocks, vi.mock(), vi.fn() |
 | **Test Data** | @faker-js/faker | Deterministic, seedable fixtures |
 
@@ -345,6 +346,7 @@ interface MockResponse {
 | TrafficLog SET NULL on endpoint delete | Preserves traffic history for analysis | CASCADE delete |
 | Lit Element + Material Web | Lightweight, standards-based web components | React, Vue |
 | Vitest for testing | Native TypeScript, fast, built-in mocking | Jest (slower, needs ts-jest) |
+| Playwright for E2E | Multi-browser, shadow DOM support, trace viewer | Cypress (Chromium only), Selenium (flaky) |
 | 100% offline tests | CI doesn't depend on external services | Integration tests with real DB |
 | supertest for HTTP | Test Express without real server | Node http.request |
 
@@ -396,12 +398,13 @@ interface MockResponse {
 - [ ] Sample management UI
 - [ ] Try-it panel
 - [ ] Traffic log viewer
+- [ ] Playwright E2E test suite for UI components
 
 ### Phase 7: Polish
 - [ ] Swagger/OpenAPI docs
 - [ ] Traffic log retention cron
 - [ ] Docker image
-- [ ] CI/CD pipeline with GitHub Actions + Codecov
+- [ ] CI/CD pipeline with GitHub Actions + Codecov + Playwright E2E
 
 ## Risks & Mitigations
 
@@ -441,21 +444,36 @@ DB_NAME=intelli_mock
 DB_USER=root
 DB_PASSWORD=
 
+# Authentication
+AUTH_DISABLED=false     # true = skip JWT verification (dev/test only)
+JWT_ALGORITHM=RS256     # RS256 | ES256 (asymmetric)
+JWT_PUBLIC_KEY=         # PEM-encoded public key or path to .pub file
+JWT_ISSUER=intelli-mock
+
 # AI Configuration
 AI_PROVIDER=openai      # OpenAI-compatible
 AI_BASE_URL=http://localhost:11434/v1   # Local Ollama for dev/testing
 AI_API_KEY=ollama       # Ollama doesn't require a real key
 AI_MODEL=gemma4:31b-cloud
 
-# Auth
-JWT_ALGORITHM=RS256     # RS256 | ES256 (asymmetric)
-JWT_PUBLIC_KEY=         # PEM-encoded public key or path to .pub file
-JWT_ISSUER=intelli-mock
-
 # Security
 ALLOWED_HEADERS=authorization,content-type,x-tenant-id
 CORS_ORIGINS=http://localhost:5173
 ```
+
+### CLI Auth Flags
+
+The `intelli-mock start` command supports flags that override env vars for auth configuration:
+
+| Flag | Env Var | Default | Purpose |
+|------|---------|---------|---------|
+| `--no-auth` | `AUTH_DISABLED=true` | `false` | Disable JWT auth entirely (dev/test only) |
+| `--auth-key <path>` | `JWT_PUBLIC_KEY` | (unset) | JWT public key PEM string or file path |
+| `--auth-issuer <name>` | `JWT_ISSUER` | `intelli-mock` | JWT issuer claim |
+| `--auth-algorithm <alg>` | `JWT_ALGORITHM` | `RS256` | JWT algorithm: `RS256` or `ES256` |
+| `-p, --port <n>` | `PORT` | `3000` | Server listen port |
+
+**Precedence:** CLI flags > env vars > defaults.
 
 ## Local AI Development with Ollama
 

@@ -4,6 +4,8 @@
 
 This document defines the unit testing strategy for the Intelli-Mock monorepo. All tests are **fully mocked** and **run 100% offline** — no external services, databases, or network calls are required.
 
+**For integration and E2E tests**, see [`docs/TESTING-INTEGRATION-E2E.md`](./TESTING-INTEGRATION-E2E.md).
+
 ### Guiding Principles
 
 | Principle | Rationale |
@@ -887,6 +889,122 @@ describe.runIf(!shouldSkip)('Ollama Integration', () => {
 ```
 
 **Note:** Integration tests with real Ollama are **excluded from unit test runs** and only execute when `TEST_OLLAMA=1` is set.
+
+---
+
+## E2E UI Tests (Playwright)
+
+While unit tests validate backend logic with mocked dependencies, **Playwright** validates the full user-facing UI in a real browser — component rendering, user interactions, shadow DOM (Lit Element), and end-to-end flows.
+
+### Why Playwright?
+
+| Criteria | Playwright | Cypress | Puppeteer |
+|----------|------------|---------|-----------|
+| **Browser support** | Chromium, Firefox, WebKit | Chromium only | Chromium only |
+| **Web Component / Shadow DOM** | Excellent — accessibility snapshots, role selectors | Manual work required | Manual work required |
+| **Auto-wait** | Built-in | Built-in | Manual |
+| **Trace viewer** | Built-in HTML report | Time-travel debugger | None |
+| **TypeScript native** | First-class | First-class | First-class |
+
+### Guiding Principles
+
+1. **Separate from unit tests** — `pnpm test:e2e`, not part of `pnpm test`
+2. **CI-optional by default** — excluded from the default CI pipeline (requires browser). Flagged for manual developer runs and explicit CI jobs
+3. **Shared test server** — reuses the Express + sql.js test server pattern
+4. **Deterministic data** — seeds the database before each test, no reliance on AI generation for basic UI tests
+5. **Shadow-DOM aware** — uses Playwright's `getByRole` and accessibility snapshots for Lit Element components
+
+### Directory Structure
+
+```
+packages/intelli-mock-ui/
+├── src/
+│   ├── components/
+│   └── services/
+├── test/
+│   ├── playwright.config.ts        # Playwright configuration
+│   ├── helpers/
+│   │   ├── test-server.ts          # Start Express server with sql.js
+│   │   ├── seed.ts                 # Seed database with test data
+│   │   └── auth.ts                 # Generate test JWT for UI
+│   └── e2e/
+│       ├── mock-list.spec.ts       # Mock list view tests
+│       └── ...                     # (future: create, detail, intercept)
+├── package.json                    # playwright as devDependency
+└── vite.config.ts
+```
+
+### Configuration
+
+**`packages/intelli-mock-ui/test/playwright.config.ts`:**
+
+```ts
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  fullyParallel: false,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: 1,
+  reporter: [['list'], ['html', { open: 'never' }]],
+  use: {
+    baseURL: 'http://localhost:5173',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+  },
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+  ],
+  webServer: {
+    command: 'pnpm dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+    timeout: 30_000,
+  },
+});
+```
+
+### Test Scenarios
+
+| # | Test File | Scenario | Description |
+|---|-----------|----------|-------------|
+| 1 | `mock-list.spec.ts` | Loading state | Spinner visible, then empty message |
+| 2 | `mock-list.spec.ts` | Populated list | 3 mocks render with method badges + status dots |
+| 3 | `mock-list.spec.ts` | Error state | Red error banner on API failure |
+
+### Scripts
+
+```bash
+# Run E2E tests (Chromium only)
+pnpm --filter @intelli-mock/ui test:e2e
+
+# Run with Playwright UI (interactive debugging)
+pnpm --filter @intelli-mock/ui test:e2e:ui
+
+# Run with step-through debugger
+pnpm --filter @intelli-mock/ui test:e2e:debug
+```
+
+### Mocking Strategy for E2E
+
+| Layer | Strategy |
+|-------|----------|
+| **Auth** | `AUTH_DISABLED=true` — bypass middleware attaches test tenant/user, no JWT needed |
+| **Database** | Real sql.js in-memory — no mocking needed |
+| **AI Service** | Mocked via `vi.mock('ai')` — no real AI calls in E2E |
+| **Network** | Real Express server on random port; Vite proxies `/api` → backend |
+| **Browser** | Playwright-managed Chromium, isolated per test |
+
+### How It Differs from Unit Tests
+
+| Aspect | Unit Tests (Vitest) | E2E Tests (Playwright) |
+|--------|---------------------|------------------------|
+| **Scope** | Individual functions, services, routes | Full UI + backend integration |
+| **Dependencies** | All mocked | Real server, real browser |
+| **Speed** | < 10 seconds | ~15-30 seconds |
+| **Run trigger** | Every commit / PR (`pnpm test`) | Manual or explicit CI (`pnpm test:e2e`) |
+| **Assertions** | Return values, side effects | DOM state, user interactions, accessibility |
 
 ---
 

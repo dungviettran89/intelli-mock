@@ -58,10 +58,11 @@ function parseStringList(value: string): string[] {
 export function loadAppConfig(): AppConfig {
   const jwtAlgorithm = (process.env.JWT_ALGORITHM || 'RS256') as 'RS256' | 'ES256';
   const jwtPublicKeyRaw = process.env.JWT_PUBLIC_KEY || '';
+  const authDisabled = process.env.AUTH_DISABLED === 'true';
 
-  // Validate required auth config
-  if (!jwtPublicKeyRaw) {
-    throw new Error('Missing required env var: JWT_PUBLIC_KEY (PEM string or file path)');
+  // Validate required auth config (skip if auth is disabled)
+  if (!authDisabled && !jwtPublicKeyRaw) {
+    throw new Error('Missing required env var: JWT_PUBLIC_KEY (PEM string or file path), or use --no-auth to disable auth');
   }
 
   return {
@@ -71,7 +72,7 @@ export function loadAppConfig(): AppConfig {
     },
     auth: {
       algorithm: jwtAlgorithm,
-      publicKey: readPublicKey(jwtPublicKeyRaw),
+      publicKey: authDisabled ? (jwtPublicKeyRaw || 'disabled') : readPublicKey(jwtPublicKeyRaw),
       issuer: process.env.JWT_ISSUER || 'intelli-mock',
     },
     ai: {

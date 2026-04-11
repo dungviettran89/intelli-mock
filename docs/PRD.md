@@ -49,6 +49,7 @@ Teams building frontend applications often depend on backend APIs that are incom
 - [ ] Swagger/OpenAPI documentation served at `/api-docs`
 - [ ] Traffic log viewer with 1-month retention policy
 - [ ] CLI application with `start` and `init` commands
+- [ ] CLI auth configuration: `--no-auth` flag to disable JWT, `--auth-key` to provide JWT public key, `--auth-issuer`, `--auth-algorithm`
 
 ### Non-Functional
 
@@ -87,6 +88,7 @@ All tests are **100% offline and fully mocked**. See [`docs/TESTING.md`](./TESTI
 - **6 test categories**: config, entities, middleware, services, database, app integration
 - **Coverage thresholds**: 80% lines, 75% branches, 80% functions
 - **CI integration**: GitHub Actions with Codecov upload
+- **Playwright** for browser-based E2E UI validation (Lit Element + Material Web components, shadow DOM)
 
 ## Timeline & Milestones
 

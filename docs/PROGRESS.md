@@ -6,12 +6,12 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~80% (Phase 6: Web UI 🟡 Started) |
+| **Overall Completion** | ~87% (Phase 6: Web UI 🟡 Started, CLI ✅ Complete + E2E Tests ✅) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 41 implemented / ~20+ planned |
-| **Test Files** | 29 files (322 unit + 10 integration), 332 tests total |
-| **Active Packages** | 2 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`) |
+| **Source Files** | 45 implemented / ~20+ planned |
+| **Test Files** | 32 files (322 unit + 10 integration + 7 CLI E2E), 339 tests total |
+| **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
 ---
 
@@ -26,6 +26,7 @@
 | **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
 | **Phase 6** | Web UI | 2/6 items | 🟡 In Progress |
 | **Phase 7** | Polish | 0/4 items | ⬜ Not Started |
+| **CLI Application** | Start Command + E2E Tests | 6/6 items | ✅ Complete |
 
 ---
 
@@ -174,10 +175,12 @@
 
 | Feature | Planned Source File | Status |
 |---|---|---|
-| **`start` command** | `apps/intelli-mock/src/commands/start.ts` | ⬜ Not Started |
+| **`start` command** (with `--no-auth`, `--auth-key`, `--auth-issuer`, `--auth-algorithm`, `--port`) | `apps/intelli-mock/src/commands/start.ts` | ✅ Done |
+| **Config loader** (CLI flags > env vars > defaults) | `apps/intelli-mock/src/config.ts` | ✅ Done |
+| **UI static file serving** | `packages/intelli-mock-core/src/app.ts` | ✅ Done |
+| **Default dev tenant** (when auth disabled) | `packages/intelli-mock-core/src/core/auth/jwt.middleware.ts` | ✅ Done |
+| **CLI E2E tests** (7 tests, 9.5s) | `apps/intelli-mock/test/e2e/*.test.ts` | ✅ Done |
 | **`init` command** | `apps/intelli-mock/src/commands/init.ts` | ⬜ Not Started |
-| **Config loader** (YAML/JSON) | `apps/intelli-mock/src/config.ts` | ⬜ Not Started |
-| **CLI tests** | `apps/intelli-mock/test/` | ⬜ Not Started |
 
 ---
 
@@ -186,14 +189,14 @@
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete) | 34 | 28 (26 unit + 2 integration) |
-| **intelli-mock (CLI)** | `apps/intelli-mock/` | 🟡 Scaffolded (no commands) | 1 | 0 |
+| **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start command + E2E tests complete) | 3 | 3 (7 E2E tests) |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6 started) | 3 | 0 |
 
 ---
 
 ## Requirements Tracking
 
-### Functional Requirements (13/20 complete)
+### Functional Requirements (14/20 complete)
 
 | # | Requirement | Status |
 |---|---|---|
@@ -216,7 +219,7 @@
 | 17 | Web UI: mock list, detail, script editor, samples | 🟡 Partial (package scaffolded, mock list done) |
 | 18 | Swagger/OpenAPI documentation at `/api-docs` | ⬜ Not Started |
 | 19 | Traffic log viewer with 1-month retention | ⬜ Not Started |
-| 20 | CLI application with `start` and `init` commands | ⬜ Not Started |
+| 20 | CLI application with `start` command | ✅ Done (start command complete, init command pending) |
 
 ### Non-Functional Requirements (4/8 complete)
 
