@@ -10,8 +10,8 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 60 implemented / ~12+ planned |
-| **Test Files** | 48 files (467 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 509 tests total |
-| **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
+| **Test Files** | 48 files (472 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 514 tests total |
+| **Coverage** | Statements 92.15%, Branches 78.68%, Functions 92.85%, Lines 92.63% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
 ---
@@ -50,7 +50,7 @@
 | **Entity: TrafficLog** | `src/entities/traffic-log.entity.ts` | `test/entities/all-entities.test.ts` | ✅ Done |
 | **tsyringe DI container** | `src/container.ts` | `test/container.test.ts` (2 tests) | ✅ Done |
 | **Env loading + validation** | `src/config/env.ts` | `test/config/env.test.ts` (11 tests) | ✅ Done |
-| **JWT auth middleware** (RS256/ES256) | `src/core/auth/jwt.middleware.ts` | `test/core/auth/jwt.middleware.test.ts` (7 tests) | ✅ Done |
+| **JWT auth middleware** (RS256/ES256) | `src/core/auth/jwt.middleware.ts` | `test/core/auth/jwt.middleware.test.ts` (12 tests, 100% coverage) | ✅ Done |
 | **TenantResolver service** (upsert) | `src/core/auth/user-resolver.ts` | `test/core/auth/user-resolver.test.ts` (8 tests) | ✅ Done |
 | **Express app factory** | `src/app.ts` | `test/app.test.ts` (4 tests) | ✅ Done |
 | **CORS middleware** | `src/app.ts` | — | ✅ Done |
@@ -336,3 +336,4 @@
 | [TODO-024](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Entity Fixtures + Sample Delete Integration Tests (3 new factories, 1 new test file, 12 new tests, 499 total) |
 | [TODO-025](tasks/done/TODO-2026-04-13-003.md) | 2026-04-13 | Mock Controller Unit Tests Enhancement (8 new tests, 507 total) |
 | [TODO-026](tasks/done/TODO-2026-04-13-004.md) | 2026-04-13 | Phase 7: Swagger/OpenAPI Documentation (1 new source file, 6 new tests, 509 total) |
+| [TODO-027](tasks/done/TODO-2026-04-13-005.md) | 2026-04-13 | JWT Middleware Test Coverage Improvement (5 new tests, 12 total, 100% coverage on jwt.middleware.ts) |
