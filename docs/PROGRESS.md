@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~97% (Phase 6: Web UI 🟡 In Progress (5/6), CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅, Phase 7: 🟡 Partial) |
+| **Overall Completion** | ~98% (Phase 6: Web UI 🟡 In Progress (5/6), CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅, Phase 7: 🟡 Partial) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 59 implemented / ~13+ planned |
-| **Test Files** | 47 files (461 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 507 tests total |
+| **Source Files** | 60 implemented / ~12+ planned |
+| **Test Files** | 48 files (467 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 509 tests total |
 | **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -189,7 +189,7 @@
 
 | Feature | Planned Source File | Status |
 |---|---|---|
-| **Swagger/OpenAPI docs** (`/api-docs`) | — | ⬜ Not Started |
+| **Swagger/OpenAPI docs** (`/api-docs`) | `src/docs/openapi.ts` | ✅ Done |
 | **Traffic log retention cron** | `src/core/logging/retention-cron.ts` | ✅ Done (tests added) |
 | **Traffic logger** | `src/core/logging/traffic-logger.ts` | ✅ Done (tests already complete) |
 | **Docker image** | `Dockerfile` | ⬜ Not Started |
@@ -212,7 +212,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron) | 40 | 39 (37 unit + 2 integration) |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron + Swagger/OpenAPI) | 41 | 40 (38 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅, Sample Editor ✅, Unit Tests ✅) | 6 | 4 (30 unit tests) |
 
@@ -220,7 +220,7 @@
 
 ## Requirements Tracking
 
-### Functional Requirements (14/20 complete)
+### Functional Requirements (15/20 complete)
 
 | # | Requirement | Status |
 |---|---|---|
@@ -241,7 +241,7 @@
 | 15 | Proxy module for HTTP forwarding | ✅ Done |
 | 16 | Auto-endpoint: proxy first → fallback to mock | ✅ Done |
 | 17 | Web UI: mock list, detail, script editor, samples, sample management | 🟡 Partial (package scaffolded, mock list, detail, script editor, sample editor done) |
-| 18 | Swagger/OpenAPI documentation at `/api-docs` | ⬜ Not Started |
+| 18 | Swagger/OpenAPI documentation at `/api-docs` | ✅ Done |
 | 19 | Traffic log viewer with 1-month retention | 🟡 Partial (API + retention cron done, UI not started) |
 | 20 | CLI application with `start` and `init` commands | ✅ Done (both commands complete with E2E tests) |
 
@@ -279,6 +279,8 @@
 | tsyringe | ^4.8.0 | Dependency injection |
 | typeorm | ^0.3.20 | ORM with dual-driver support |
 | vm2 | ^3.9.19 | Sandboxed script execution |
+| swagger-ui-express | ^5.0.1 | Swagger UI middleware |
+| swagger-jsdoc | ^6.2.8 | OpenAPI spec generator |
 | commander | ^13.0.0 | CLI framework (CLI package) |
 | vitest | ^4.1.4 | Test runner |
 | supertest | ^7.2.2 | HTTP testing |
@@ -299,7 +301,6 @@
 
 | Dependency | Phase | Purpose |
 |---|---|---|
-| `swagger-ui-express` or `swagger-jsdoc` | Phase 7 | OpenAPI docs |
 | `ts-mockito` | Testing | Type-safe test mocking |
 | `jsrsasign` | Testing | Test JWT key generation |
 
@@ -334,3 +335,4 @@
 | [TODO-023](tasks/done/TODO-2026-04-13-002.md) | 2026-04-13 | Traffic API Integration Tests (1 new test file, 12 new tests, 487 total) |
 | [TODO-024](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Entity Fixtures + Sample Delete Integration Tests (3 new factories, 1 new test file, 12 new tests, 499 total) |
 | [TODO-025](tasks/done/TODO-2026-04-13-003.md) | 2026-04-13 | Mock Controller Unit Tests Enhancement (8 new tests, 507 total) |
+| [TODO-026](tasks/done/TODO-2026-04-13-004.md) | 2026-04-13 | Phase 7: Swagger/OpenAPI Documentation (1 new source file, 6 new tests, 509 total) |

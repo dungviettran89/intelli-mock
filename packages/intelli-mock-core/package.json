@@ -24,6 +24,8 @@
     "mariadb": "^3.4.0",
     "reflect-metadata": "^0.2.0",
     "sql.js": "^1.12.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "tsyringe": "^4.8.0",
     "typeorm": "^0.3.20",
     "vm2": "^3.10.5"
@@ -33,6 +35,8 @@
     "@types/express": "^4.17.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/supertest": "^7.2.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "supertest": "^7.2.2",
     "ts-node": "^10.9.0",
     "vitest": "^4.1.4"

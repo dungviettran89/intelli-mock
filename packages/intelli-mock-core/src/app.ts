@@ -12,6 +12,8 @@ import { MockHandler } from './modules/mock/mock.handler';
 import { AutoHandler } from './modules/mock/auto.handler';
 import { Tenant } from './entities/tenant.entity';
 import { User } from './entities/user.entity';
+import swaggerUi from 'swagger-ui-express';
+import { openApiSpec } from './docs/openapi';
 
 export interface AppOptions {
   /** Absolute path to the UI dist directory to serve static files. If not provided, UI will not be served. */
@@ -94,6 +96,12 @@ export async function createApp(options: AppOptions = {}): Promise<Application> 
 
   // API routes — traffic logs
   app.use('/api/traffic', createTrafficRouter());
+
+  // Swagger/OpenAPI documentation
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
+  app.use('/swagger.json', (req: Request, res: Response) => {
+    res.json(openApiSpec);
+  });
 
   // Runtime mock handler — serves mock requests at /_it/mock/*
   const mockHandler = container.resolve(MockHandler);
