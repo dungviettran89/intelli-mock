@@ -10,7 +10,7 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 59 implemented / ~13+ planned |
-| **Test Files** | 45 files (442 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 475 tests total |
+| **Test Files** | 46 files (442 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 487 tests total |
 | **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -121,6 +121,7 @@
 | **Traffic logger** (Express req/res normalization) | `src/core/logging/traffic-logger.ts` | `test/core/logging/traffic-logger.test.ts` (8 tests) | ✅ Done |
 | **Retention cron** (daily cleanup) | `src/core/logging/retention-cron.ts` | `test/core/logging/retention-cron.test.ts` (21 tests) | ✅ Done |
 | **TrafficService.deleteOlderThan** | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (4 new tests) | ✅ Done |
+| **Traffic API integration tests** | — | `test/modules/traffic/traffic.integration.test.ts` (12 tests) | ✅ Done |
 
 ---
 
@@ -329,3 +330,4 @@
 | [TODO-020](tasks/done/TODO-2026-04-12-001.md) | 2026-04-12 | Phase 7: Traffic Log Retention Cron — TrafficLogger + RetentionCron + deleteOlderThan (3 new source files, ~22 new tests, 424 total) |
 | [TODO-021](tasks/done/TODO-2026-04-12-008.md) | 2026-04-12 | Phase 6: Web UI — Sample Editor Component (1 new source file, 14 new tests, 454 total) |
 | [TODO-022](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Sample Controller Unit Tests (1 new test file, 21 new tests, 475 total) |
+| [TODO-023](tasks/done/TODO-2026-04-13-002.md) | 2026-04-13 | Traffic API Integration Tests (1 new test file, 12 new tests, 487 total) |
