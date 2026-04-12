@@ -1,6 +1,6 @@
 # Project Progress
 
-> Last updated: 2026-04-12
+> Last updated: 2026-04-13
 
 ## Overall Status
 
@@ -10,7 +10,7 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 59 implemented / ~13+ planned |
-| **Test Files** | 44 files (421 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 454 tests total |
+| **Test Files** | 45 files (442 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 475 tests total |
 | **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -137,7 +137,7 @@
 | **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (18 tests) | ✅ Done |
 | **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` + integration | ✅ Done |
 | **Sample service** (pair management) | `src/modules/sample/sample.service.ts` | `test/modules/sample/sample.service.test.ts` (12 tests) | ✅ Done |
-| **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | — | ✅ Done |
+| **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | `test/modules/sample/sample.controller.test.ts` (21 tests) | ✅ Done |
 | **Sample routes** (Express router) | `src/modules/sample/sample.routes.ts` | — | ✅ Done |
 
 ### Phase 3: AI Engine
@@ -210,7 +210,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron) | 40 | 38 (36 unit + 2 integration) |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron) | 40 | 39 (37 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅, Sample Editor ✅, Unit Tests ✅) | 6 | 4 (30 unit tests) |
 
@@ -328,3 +328,4 @@
 | [TODO-019](tasks/done/TODO-2026-04-12-006.md) | 2026-04-12 | Route Tests + Coverage Threshold Compliance (23 new tests, 386 total, all thresholds pass ✅) |
 | [TODO-020](tasks/done/TODO-2026-04-12-001.md) | 2026-04-12 | Phase 7: Traffic Log Retention Cron — TrafficLogger + RetentionCron + deleteOlderThan (3 new source files, ~22 new tests, 424 total) |
 | [TODO-021](tasks/done/TODO-2026-04-12-008.md) | 2026-04-12 | Phase 6: Web UI — Sample Editor Component (1 new source file, 14 new tests, 454 total) |
+| [TODO-022](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Sample Controller Unit Tests (1 new test file, 21 new tests, 475 total) |
