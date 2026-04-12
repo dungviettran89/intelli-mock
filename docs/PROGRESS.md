@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~96% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅, Phase 7: 🟡 Partial) |
+| **Overall Completion** | ~97% (Phase 6: Web UI 🟡 In Progress (5/6), CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅, Phase 7: 🟡 Partial) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 58 implemented / ~14+ planned |
-| **Test Files** | 43 files (421 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 449 tests total |
+| **Source Files** | 59 implemented / ~13+ planned |
+| **Test Files** | 44 files (421 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 454 tests total |
 | **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -25,7 +25,7 @@
 | **Phase 3** | AI Engine | 5/5 items | ✅ Complete |
 | **Phase 4** | vm2 Sandbox | 4/4 items | ✅ Complete |
 | **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
-| **Phase 6** | Web UI | 4/6 items | 🟡 In Progress |
+| **Phase 6** | Web UI | 5/6 items | 🟡 In Progress |
 | **Phase 7** | Polish | 2/4 items | 🟡 Partial |
 | **CLI Application** | Start + Init Commands + E2E Tests | 7/7 items | ✅ Complete |
 
@@ -176,7 +176,7 @@
 | **Mock list view** | `packages/intelli-mock-ui/src/components/mock-list.ts` | ✅ Done |
 | **Mock detail view** | `packages/intelli-mock-ui/src/components/mock-detail.ts` | ✅ Done |
 | **Script editor** (CodeMirror 6) | `packages/intelli-mock-ui/src/components/script-editor.ts` | ✅ Done |
-| **Sample management UI** | `packages/intelli-mock-ui/src/components/sample-editor.ts` | ⬜ Not Started |
+| **Sample management UI** | `packages/intelli-mock-ui/src/components/sample-editor.ts` | ✅ Done |
 | **Try-it panel** | `packages/intelli-mock-ui/src/components/try-it.ts` | ⬜ Not Started |
 | **Traffic log viewer** | `packages/intelli-mock-ui/src/components/traffic-viewer.ts` | ⬜ Not Started |
 | **Traffic log API** (`/api/traffic`) | `packages/intelli-mock-core/src/modules/traffic/` | ✅ Done |
@@ -212,7 +212,7 @@
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron) | 40 | 38 (36 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
-| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅, Unit Tests ✅) | 5 | 3 (25 unit tests) |
+| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅, Sample Editor ✅, Unit Tests ✅) | 6 | 4 (30 unit tests) |
 
 ---
 
@@ -238,7 +238,7 @@
 | 14 | vm2 sandbox for isolated mock script execution | ✅ Done |
 | 15 | Proxy module for HTTP forwarding | ✅ Done |
 | 16 | Auto-endpoint: proxy first → fallback to mock | ✅ Done |
-| 17 | Web UI: mock list, detail, script editor, samples | 🟡 Partial (package scaffolded, mock list, detail, script editor done) |
+| 17 | Web UI: mock list, detail, script editor, samples, sample management | 🟡 Partial (package scaffolded, mock list, detail, script editor, sample editor done) |
 | 18 | Swagger/OpenAPI documentation at `/api-docs` | ⬜ Not Started |
 | 19 | Traffic log viewer with 1-month retention | 🟡 Partial (API + retention cron done, UI not started) |
 | 20 | CLI application with `start` and `init` commands | ✅ Done (both commands complete with E2E tests) |
@@ -327,3 +327,4 @@
 | [TODO-018](tasks/done/TODO-2026-04-12-005.md) | 2026-04-12 | CLI `init` Command — Config File Generation (8 new E2E tests, 355 total) |
 | [TODO-019](tasks/done/TODO-2026-04-12-006.md) | 2026-04-12 | Route Tests + Coverage Threshold Compliance (23 new tests, 386 total, all thresholds pass ✅) |
 | [TODO-020](tasks/done/TODO-2026-04-12-001.md) | 2026-04-12 | Phase 7: Traffic Log Retention Cron — TrafficLogger + RetentionCron + deleteOlderThan (3 new source files, ~22 new tests, 424 total) |
+| [TODO-021](tasks/done/TODO-2026-04-12-008.md) | 2026-04-12 | Phase 6: Web UI — Sample Editor Component (1 new source file, 14 new tests, 454 total) |
