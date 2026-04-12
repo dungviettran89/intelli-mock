@@ -6,12 +6,12 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~95% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅) |
+| **Overall Completion** | ~96% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅, Phase 7: 🟡 Partial) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 56 implemented / ~16+ planned |
-| **Test Files** | 40 files (396 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 421 tests total |
-| **Coverage** | Statements 90.62%, Branches 83.47%, Functions 95.94%, Lines 91.08% ✅ All thresholds pass |
+| **Source Files** | 58 implemented / ~14+ planned |
+| **Test Files** | 40 files (396 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 424 tests total |
+| **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
 ---
@@ -26,7 +26,7 @@
 | **Phase 4** | vm2 Sandbox | 4/4 items | ✅ Complete |
 | **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
 | **Phase 6** | Web UI | 4/6 items | 🟡 In Progress |
-| **Phase 7** | Polish | 0/4 items | ⬜ Not Started |
+| **Phase 7** | Polish | 2/4 items | 🟡 Partial |
 | **CLI Application** | Start + Init Commands + E2E Tests | 7/7 items | ✅ Complete |
 
 ---
@@ -210,7 +210,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Retention Cron Tests) | 36 | 30 (28 unit + 2 integration) |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron) | 40 | 38 (36 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅) | 5 | 0 |
 
@@ -326,4 +326,4 @@
 | [TODO-017](tasks/done/TODO-2026-04-12-004.md) | 2026-04-12 | Traffic Log API (`/api/traffic`) — REST endpoint + controller |
 | [TODO-018](tasks/done/TODO-2026-04-12-005.md) | 2026-04-12 | CLI `init` Command — Config File Generation (8 new E2E tests, 355 total) |
 | [TODO-019](tasks/done/TODO-2026-04-12-006.md) | 2026-04-12 | Route Tests + Coverage Threshold Compliance (23 new tests, 386 total, all thresholds pass ✅) |
-| [TODO-020](tasks/done/TODO-2026-04-12-001.md) | 2026-04-12 | Phase 7: Traffic Log Retention Cron Tests (25 new tests, 411 total) |
+| [TODO-020](tasks/done/TODO-2026-04-12-001.md) | 2026-04-12 | Phase 7: Traffic Log Retention Cron — TrafficLogger + RetentionCron + deleteOlderThan (3 new source files, ~22 new tests, 424 total) |
