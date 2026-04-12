@@ -10,7 +10,7 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 59 implemented / ~13+ planned |
-| **Test Files** | 46 files (442 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 487 tests total |
+| **Test Files** | 47 files (453 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 499 tests total |
 | **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -67,7 +67,7 @@
 | Vitest workspace config | `vitest.workspace.ts` (root) | ✅ Done |
 | Test tsconfig | `test/tsconfig.test.json` | ✅ Done |
 | Global test setup (env reset hooks) | `test/setup.ts` | ✅ Done |
-| Entity factories (Tenant, MockEndpoint, User) | `test/helpers/fixtures.ts` | ✅ Done |
+| Entity factories (Tenant, MockEndpoint, User, SamplePair, MockScript, TrafficLog) | `test/helpers/fixtures.ts` | ✅ Done |
 | DI container reset utility | `test/helpers/mock-container.ts` | ✅ Done |
 | Express test app builder + mock helpers | `test/helpers/test-app.ts` | ✅ Done |
 | Offline JWT token generation | `test/helpers/jwt-utils.ts` | ✅ Done |
@@ -140,6 +140,7 @@
 | **Sample service** (pair management) | `src/modules/sample/sample.service.ts` | `test/modules/sample/sample.service.test.ts` (12 tests) | ✅ Done |
 | **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | `test/modules/sample/sample.controller.test.ts` (21 tests) | ✅ Done |
 | **Sample routes** (Express router) | `src/modules/sample/sample.routes.ts` | — | ✅ Done |
+| **Sample delete integration tests** | — | `test/modules/sample/sample.delete-integration.test.ts` (12 tests) | ✅ Done |
 
 ### Phase 3: AI Engine
 
@@ -331,3 +332,4 @@
 | [TODO-021](tasks/done/TODO-2026-04-12-008.md) | 2026-04-12 | Phase 6: Web UI — Sample Editor Component (1 new source file, 14 new tests, 454 total) |
 | [TODO-022](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Sample Controller Unit Tests (1 new test file, 21 new tests, 475 total) |
 | [TODO-023](tasks/done/TODO-2026-04-13-002.md) | 2026-04-13 | Traffic API Integration Tests (1 new test file, 12 new tests, 487 total) |
+| [TODO-024](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Entity Fixtures + Sample Delete Integration Tests (3 new factories, 1 new test file, 12 new tests, 499 total) |
