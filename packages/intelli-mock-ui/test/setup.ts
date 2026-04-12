@@ -1,15 +1,34 @@
-import { test as base, expect } from '@playwright/test';
+import { vi } from 'vitest';
 
-type TestFixtures = {
-  // Reserved for future use
-};
+/**
+ * Test setup for UI package — provides global mocks and helpers.
+ */
 
-export const test = base.extend<TestFixtures>({
-  // Before each test, navigate to the app
-  page: async ({ page }, use) => {
-    await page.goto('/');
-    await use(page);
-  },
-});
+// Mock global fetch
+export function mockFetch() {
+  const fetchMock = vi.fn();
+  global.fetch = fetchMock;
+  return fetchMock;
+}
 
-export { expect };
+/**
+ * Helper to create a mock fetch response
+ */
+export function mockFetchResponse(data: unknown, status = 200, ok = true) {
+  return {
+    ok,
+    status,
+    json: vi.fn().mockResolvedValue(data),
+  };
+}
+
+/**
+ * Helper to create a mock fetch error response
+ */
+export function mockFetchError(status = 500, message = 'Error') {
+  return {
+    ok: false,
+    status,
+    json: vi.fn().mockResolvedValue({ error: message }),
+  };
+}

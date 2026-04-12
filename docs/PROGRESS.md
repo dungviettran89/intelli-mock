@@ -10,7 +10,7 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 58 implemented / ~14+ planned |
-| **Test Files** | 40 files (396 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 424 tests total |
+| **Test Files** | 43 files (421 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 449 tests total |
 | **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -212,7 +212,7 @@
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron) | 40 | 38 (36 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
-| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅) | 5 | 0 |
+| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅, Unit Tests ✅) | 5 | 3 (25 unit tests) |
 
 ---
 
