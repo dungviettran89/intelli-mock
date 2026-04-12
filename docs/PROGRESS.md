@@ -10,7 +10,7 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 59 implemented / ~13+ planned |
-| **Test Files** | 47 files (453 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 499 tests total |
+| **Test Files** | 47 files (461 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 507 tests total |
 | **Coverage** | Statements 90.81%, Branches 83.99%, Functions 94.40%, Lines 91.26% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -109,7 +109,7 @@
 |---|---|---|---|
 | **Route matcher** (longest match, wildcard, `:param`) | `src/core/matching/route-matcher.ts` | `test/core/matching/route-matcher.test.ts` (25 tests) | ✅ Done |
 | **Mock service** (CRUD, tenant-scoped) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` (12 tests) | ✅ Done |
-| **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` (9 tests) | ✅ Done |
+| **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` (17 tests) | ✅ Done |
 | **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
 | **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (18 tests) | ✅ Done |
 | **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` (14 tests)<br>`test/modules/mock/mock.handler.integration.test.ts` (6 tests) | ✅ Done |
@@ -333,3 +333,4 @@
 | [TODO-022](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Sample Controller Unit Tests (1 new test file, 21 new tests, 475 total) |
 | [TODO-023](tasks/done/TODO-2026-04-13-002.md) | 2026-04-13 | Traffic API Integration Tests (1 new test file, 12 new tests, 487 total) |
 | [TODO-024](tasks/done/TODO-2026-04-13-001.md) | 2026-04-13 | Entity Fixtures + Sample Delete Integration Tests (3 new factories, 1 new test file, 12 new tests, 499 total) |
+| [TODO-025](tasks/done/TODO-2026-04-13-003.md) | 2026-04-13 | Mock Controller Unit Tests Enhancement (8 new tests, 507 total) |

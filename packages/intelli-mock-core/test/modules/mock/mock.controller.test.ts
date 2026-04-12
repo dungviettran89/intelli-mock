@@ -96,6 +96,27 @@ describe('MockController (HTTP integration)', () => {
         .send({ method: 'GET' })
         .expect(400);
     });
+
+    it('should return 500 when service throws an error', async () => {
+      mockRepo.create.mockImplementation(() => {
+        throw new Error('Database write failed');
+      });
+
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.create(req, res);
+      });
+
+      const response = await request(app)
+        .post('/api/mocks')
+        .send({ pathPattern: '/api/users', method: 'GET' })
+        .expect(500);
+
+      expect(response.body.error).toBe('Internal server error');
+      expect(response.body.message).toBe('Database write failed');
+    });
   });
 
   describe('GET /api/mocks', () => {
@@ -117,6 +138,22 @@ describe('MockController (HTTP integration)', () => {
 
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body).toHaveLength(2);
+    });
+
+    it('should return 500 when service throws an error', async () => {
+      mockRepo.find.mockRejectedValue(new Error('Database connection failed'));
+
+      const app = express();
+      app.use(express.json());
+      app.get('/api/mocks', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.findAll(req, res);
+      });
+
+      const response = await request(app).get('/api/mocks').expect(500);
+
+      expect(response.body.error).toBe('Internal server error');
+      expect(response.body.message).toBe('Database connection failed');
     });
   });
 
@@ -150,6 +187,20 @@ describe('MockController (HTTP integration)', () => {
       });
 
       await request(app).get('/api/mocks/nonexistent').expect(404);
+    });
+
+    it('should return 400 when id parameter is missing', async () => {
+      const app = express();
+      app.use(express.json());
+      app.get('/api/mocks', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.findById(req, res);
+      });
+
+      const response = await request(app).get('/api/mocks').expect(400);
+
+      expect(response.body.error).toBe('Bad request');
+      expect(response.body.message).toBe('id parameter is required');
     });
   });
 
@@ -190,6 +241,42 @@ describe('MockController (HTTP integration)', () => {
 
       await request(app).put('/api/mocks/nonexistent').send({ pathPattern: '/api/new' }).expect(404);
     });
+
+    it('should return 400 when id parameter is missing', async () => {
+      const app = express();
+      app.use(express.json());
+      app.put('/api/mocks', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.update(req, res);
+      });
+
+      const response = await request(app)
+        .put('/api/mocks')
+        .send({ pathPattern: '/api/new' })
+        .expect(400);
+
+      expect(response.body.error).toBe('Bad request');
+      expect(response.body.message).toBe('id parameter is required');
+    });
+
+    it('should return 500 when service throws an error', async () => {
+      mockRepo.findOne.mockRejectedValue(new Error('Update failed'));
+
+      const app = express();
+      app.use(express.json());
+      app.put('/api/mocks/:id', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.update(req, res);
+      });
+
+      const response = await request(app)
+        .put('/api/mocks/ep1')
+        .send({ pathPattern: '/api/new' })
+        .expect(500);
+
+      expect(response.body.error).toBe('Internal server error');
+      expect(response.body.message).toBe('Update failed');
+    });
   });
 
   describe('DELETE /api/mocks/:id', () => {
@@ -217,6 +304,36 @@ describe('MockController (HTTP integration)', () => {
       });
 
       await request(app).delete('/api/mocks/nonexistent').expect(404);
+    });
+
+    it('should return 400 when id parameter is missing', async () => {
+      const app = express();
+      app.use(express.json());
+      app.delete('/api/mocks', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.delete(req, res);
+      });
+
+      const response = await request(app).delete('/api/mocks').expect(400);
+
+      expect(response.body.error).toBe('Bad request');
+      expect(response.body.message).toBe('id parameter is required');
+    });
+
+    it('should return 500 when service throws an error', async () => {
+      mockRepo.delete.mockRejectedValue(new Error('Delete failed'));
+
+      const app = express();
+      app.use(express.json());
+      app.delete('/api/mocks/:id', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.delete(req, res);
+      });
+
+      const response = await request(app).delete('/api/mocks/ep1').expect(500);
+
+      expect(response.body.error).toBe('Internal server error');
+      expect(response.body.message).toBe('Delete failed');
     });
   });
 
@@ -317,6 +434,22 @@ describe('MockController (HTTP integration)', () => {
       await request(app)
         .post('/api/mocks/nonexistent/generate')
         .expect(404);
+    });
+
+    it('should return 400 when id parameter is missing', async () => {
+      const app = express();
+      app.use(express.json());
+      app.post('/api/mocks/generate', (req, res) => {
+        req.tenant = { id: 't1', slug: 'test', name: 'Test' } as any;
+        return controller.generate(req, res);
+      });
+
+      const response = await request(app)
+        .post('/api/mocks/generate')
+        .expect(400);
+
+      expect(response.body.error).toBe('Bad request');
+      expect(response.body.message).toBe('id parameter is required');
     });
 
     it('should return 502 when AI generation fails', async () => {
