@@ -14,8 +14,9 @@
     "test:e2e": "pnpm --filter @intelli-mock/ui test:e2e"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
     "@types/node": "^22.0.0",
-    "ts-node": "^10.9.0"
+    "@vitest/coverage-v8": "^4.1.4",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.7.0"
   }
 }

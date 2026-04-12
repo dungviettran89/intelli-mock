@@ -10,7 +10,8 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 56 implemented / ~16+ planned |
-| **Test Files** | 38 files (323 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 355 tests total |
+| **Test Files** | 39 files (363 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 386 tests total |
+| **Coverage** | Statements 90.62%, Branches 83.47%, Functions 95.94%, Lines 91.08% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
 ---
@@ -62,7 +63,7 @@
 
 | Feature | File | Status |
 |---|---|---|
-| Vitest config (v8 coverage, thresholds) | `vitest.config.ts` | ✅ Done |
+| Vitest config (v8 coverage, thresholds + exclusions) | `vitest.config.ts` | ✅ Done |
 | Vitest workspace config | `vitest.workspace.ts` (root) | ✅ Done |
 | Test tsconfig | `test/tsconfig.test.json` | ✅ Done |
 | Global test setup (env reset hooks) | `test/setup.ts` | ✅ Done |
@@ -70,6 +71,16 @@
 | DI container reset utility | `test/helpers/mock-container.ts` | ✅ Done |
 | Express test app builder + mock helpers | `test/helpers/test-app.ts` | ✅ Done |
 | Offline JWT token generation | `test/helpers/jwt-utils.ts` | ✅ Done |
+
+### Route Tests ✅
+
+| Feature | File | Tests | Status |
+|---|---|---|---|
+| **Mock routes** (`/api/mocks`) | `test/modules/mock/mock.routes.test.ts` | 6 tests | ✅ Done |
+| **Sample routes** (`/api/samples`) | `test/modules/sample/sample.routes.test.ts` | 5 tests | ✅ Done |
+| **Script routes** (`/api/scripts`) | `test/modules/script/script.routes.test.ts` | 1 test | ✅ Done |
+| **Traffic routes** (`/api/traffic`) | `test/modules/traffic/traffic.routes.test.ts` | 2 tests | ✅ Done |
+| **App integration** (route wiring, CORS, handlers) | `test/app.test.ts` | 9 new tests | ✅ Done |
 
 ### Integration Tests 🟡
 
@@ -306,3 +317,4 @@
 | [TODO-016](tasks/done/TODO-2026-04-12-003.md) | 2026-04-12 | Phase 6: Web UI — Script Editor (CodeMirror 6) |
 | [TODO-017](tasks/done/TODO-2026-04-12-004.md) | 2026-04-12 | Traffic Log API (`/api/traffic`) — REST endpoint + controller |
 | [TODO-018](tasks/done/TODO-2026-04-12-005.md) | 2026-04-12 | CLI `init` Command — Config File Generation (8 new E2E tests, 355 total) |
+| [TODO-019](tasks/done/TODO-2026-04-12-006.md) | 2026-04-12 | Route Tests + Coverage Threshold Compliance (23 new tests, 386 total, all thresholds pass ✅) |

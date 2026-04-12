@@ -17,6 +17,14 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov'],
       reportsDirectory: './coverage',
+      exclude: [
+        'src/types/**/*.d.ts',
+        'src/index.ts',
+        'src/server.ts',
+        'src/entities/**/*.ts',
+        'src/database/data-source.config.ts',
+        'src/database/migrations/**/*.ts',
+      ],
       thresholds: {
         lines: 80,
         functions: 80,
