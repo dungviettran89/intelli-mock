@@ -10,7 +10,7 @@
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
 | **Source Files** | 56 implemented / ~16+ planned |
-| **Test Files** | 39 files (363 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 386 tests total |
+| **Test Files** | 40 files (396 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 421 tests total |
 | **Coverage** | Statements 90.62%, Branches 83.47%, Functions 95.94%, Lines 91.08% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -111,8 +111,16 @@
 | **Mock service** (CRUD, tenant-scoped) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` (12 tests) | ✅ Done |
 | **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` (9 tests) | ✅ Done |
 | **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
-| **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (14 tests) | ✅ Done |
+| **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (18 tests) | ✅ Done |
 | **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` (14 tests)<br>`test/modules/mock/mock.handler.integration.test.ts` (6 tests) | ✅ Done |
+
+### Core Logging (Phase 7) ✅
+
+| Feature | Source File | Tests | Status |
+|---|---|---|---|
+| **Traffic logger** (Express req/res normalization) | `src/core/logging/traffic-logger.ts` | `test/core/logging/traffic-logger.test.ts` (8 tests) | ✅ Done |
+| **Retention cron** (daily cleanup) | `src/core/logging/retention-cron.ts` | `test/core/logging/retention-cron.test.ts` (21 tests) | ✅ Done |
+| **TrafficService.deleteOlderThan** | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (4 new tests) | ✅ Done |
 
 ---
 
@@ -126,7 +134,7 @@
 | **Mock service** (CRUD logic) | `src/modules/mock/mock.service.ts` | `test/modules/mock/mock.service.test.ts` | ✅ Done |
 | **Mock controller** (REST API handlers) | `src/modules/mock/mock.controller.ts` | `test/modules/mock/mock.controller.test.ts` | ✅ Done |
 | **Mock routes** (Express router) | `src/modules/mock/mock.routes.ts` | — | ✅ Done |
-| **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (14 tests) | ✅ Done |
+| **Traffic service** (logging + retrieval) | `src/modules/mock/traffic.service.ts` | `test/modules/mock/traffic.service.test.ts` (18 tests) | ✅ Done |
 | **Mock handler** (`/_it/mock/*` runtime) | `src/modules/mock/mock.handler.ts` | `test/modules/mock/mock.handler.test.ts` + integration | ✅ Done |
 | **Sample service** (pair management) | `src/modules/sample/sample.service.ts` | `test/modules/sample/sample.service.test.ts` (12 tests) | ✅ Done |
 | **Sample controller** (REST API) | `src/modules/sample/sample.controller.ts` | — | ✅ Done |
@@ -180,8 +188,8 @@
 | Feature | Planned Source File | Status |
 |---|---|---|
 | **Swagger/OpenAPI docs** (`/api-docs`) | — | ⬜ Not Started |
-| **Traffic log retention cron** | `src/core/logging/retention-cron.ts` | ⬜ Not Started |
-| **Traffic logger** | `src/core/logging/traffic-logger.ts` | ⬜ Not Started |
+| **Traffic log retention cron** | `src/core/logging/retention-cron.ts` | ✅ Done (tests added) |
+| **Traffic logger** | `src/core/logging/traffic-logger.ts` | ✅ Done (tests already complete) |
 | **Docker image** | `Dockerfile` | ⬜ Not Started |
 | **CI/CD pipeline** (GitHub Actions + Codecov) | `.github/workflows/` | ⬜ Not Started |
 
@@ -202,7 +210,7 @@
 
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
-| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API) | 36 | 29 (27 unit + 2 integration) |
+| **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Retention Cron Tests) | 36 | 30 (28 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅) | 5 | 0 |
 
@@ -232,7 +240,7 @@
 | 16 | Auto-endpoint: proxy first → fallback to mock | ✅ Done |
 | 17 | Web UI: mock list, detail, script editor, samples | 🟡 Partial (package scaffolded, mock list, detail, script editor done) |
 | 18 | Swagger/OpenAPI documentation at `/api-docs` | ⬜ Not Started |
-| 19 | Traffic log viewer with 1-month retention | 🟡 Partial (API done, UI not started) |
+| 19 | Traffic log viewer with 1-month retention | 🟡 Partial (API + retention cron done, UI not started) |
 | 20 | CLI application with `start` and `init` commands | ✅ Done (both commands complete with E2E tests) |
 
 ### Non-Functional Requirements (4/8 complete)
@@ -318,3 +326,4 @@
 | [TODO-017](tasks/done/TODO-2026-04-12-004.md) | 2026-04-12 | Traffic Log API (`/api/traffic`) — REST endpoint + controller |
 | [TODO-018](tasks/done/TODO-2026-04-12-005.md) | 2026-04-12 | CLI `init` Command — Config File Generation (8 new E2E tests, 355 total) |
 | [TODO-019](tasks/done/TODO-2026-04-12-006.md) | 2026-04-12 | Route Tests + Coverage Threshold Compliance (23 new tests, 386 total, all thresholds pass ✅) |
+| [TODO-020](tasks/done/TODO-2026-04-12-001.md) | 2026-04-12 | Phase 7: Traffic Log Retention Cron Tests (25 new tests, 411 total) |

@@ -56,3 +56,8 @@ export { ScriptRunner, ScriptExecutionResult, ScriptExecutionError } from './mod
 export { AIService, GenerateScriptInput, GeneratedScript } from './modules/ai/ai.service';
 export { SYSTEM_PROMPT, createUserPrompt, createTestPrompt, SamplePairForPrompt } from './modules/ai/prompts';
 
+// Logging
+export { TrafficLogger } from './core/logging/traffic-logger';
+export { RetentionCron, RETENTION_INTERVAL_MS } from './core/logging/retention-cron';
+export { DEFAULT_RETENTION_DAYS } from './core/logging/traffic-logger';
+

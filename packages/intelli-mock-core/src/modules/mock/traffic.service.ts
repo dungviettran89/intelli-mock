@@ -116,4 +116,19 @@ export class TrafficService {
   async countByTenant(tenantId: string): Promise<number> {
     return this.repo.count({ where: { tenantId } });
   }
+
+  /**
+   * Deletes all traffic logs older than the specified cutoff date, scoped by tenant.
+   * Returns the number of deleted rows.
+   */
+  async deleteOlderThan(tenantId: string, cutoffDate: Date): Promise<number> {
+    const result = await this.repo
+      .createQueryBuilder()
+      .delete()
+      .where('tenant_id = :tenantId', { tenantId })
+      .andWhere('created_at < :cutoffDate', { cutoffDate })
+      .execute();
+
+    return result.affected ?? 0;
+  }
 }

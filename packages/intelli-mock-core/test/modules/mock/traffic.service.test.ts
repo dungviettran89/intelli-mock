@@ -10,6 +10,7 @@ const mockRepo = {
   findAndCount: vi.fn(),
   findOne: vi.fn(),
   count: vi.fn(),
+  createQueryBuilder: vi.fn(),
 };
 
 vi.mock('@src/database/data-source.js', () => ({
@@ -234,6 +235,82 @@ describe('TrafficService', () => {
       const result = await service.countByTenant('t1');
 
       expect(result).toBe(0);
+    });
+  });
+
+  describe('deleteOlderThan', () => {
+    it('should delete traffic logs older than cutoff date for a tenant', async () => {
+      const cutoffDate = new Date('2024-01-01');
+      const mockQueryBuilder = {
+        delete: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        execute: vi.fn().mockResolvedValue({ affected: 5 }),
+      };
+      mockRepo.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+
+      const result = await service.deleteOlderThan('t1', cutoffDate);
+
+      expect(mockRepo.createQueryBuilder).toHaveBeenCalled();
+      expect(mockQueryBuilder.delete).toHaveBeenCalled();
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'tenant_id = :tenantId',
+        { tenantId: 't1' }
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'created_at < :cutoffDate',
+        { cutoffDate }
+      );
+      expect(mockQueryBuilder.execute).toHaveBeenCalled();
+      expect(result).toBe(5);
+    });
+
+    it('should return 0 when no rows are deleted', async () => {
+      const cutoffDate = new Date('2024-01-01');
+      const mockQueryBuilder = {
+        delete: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        execute: vi.fn().mockResolvedValue({ affected: 0 }),
+      };
+      mockRepo.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+
+      const result = await service.deleteOlderThan('t1', cutoffDate);
+
+      expect(result).toBe(0);
+    });
+
+    it('should return 0 when affected is null', async () => {
+      const cutoffDate = new Date('2024-01-01');
+      const mockQueryBuilder = {
+        delete: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        execute: vi.fn().mockResolvedValue({ affected: null }),
+      };
+      mockRepo.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+
+      const result = await service.deleteOlderThan('t1', cutoffDate);
+
+      expect(result).toBe(0);
+    });
+
+    it('should scope deletion to a specific tenant', async () => {
+      const cutoffDate = new Date('2024-01-01');
+      const mockQueryBuilder = {
+        delete: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        execute: vi.fn().mockResolvedValue({ affected: 10 }),
+      };
+      mockRepo.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+
+      await service.deleteOlderThan('tenant-123', cutoffDate);
+
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'tenant_id = :tenantId',
+        { tenantId: 'tenant-123' }
+      );
     });
   });
 });

@@ -5,6 +5,8 @@ import { MockService } from './modules/mock/mock.service';
 import { MockController } from './modules/mock/mock.controller';
 import { MockHandler } from './modules/mock/mock.handler';
 import { TrafficService } from './modules/mock/traffic.service';
+import { TrafficLogger } from './core/logging/traffic-logger';
+import { RetentionCron } from './core/logging/retention-cron';
 import { SampleService } from './modules/sample/sample.service';
 import { SampleController } from './modules/sample/sample.controller';
 import { ScriptService } from './modules/script/script.service';
@@ -37,6 +39,8 @@ export function configureContainer() {
   container.registerSingleton(ScriptRunner);
   container.registerSingleton(AIService);
   container.registerSingleton(ProxyService);
+  container.registerSingleton(TrafficLogger);
+  container.registerSingleton(RetentionCron);
 
   // Factory for auth middleware (depends on TenantResolver instance)
   container.register('AuthMiddleware', {
@@ -55,3 +59,5 @@ export function getAuthMiddleware() {
 }
 
 export { container };
+export { TrafficLogger } from './core/logging/traffic-logger';
+export { RetentionCron } from './core/logging/retention-cron';

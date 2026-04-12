@@ -2,6 +2,9 @@ import { Application } from 'express';
 import { createApp, attachErrorHandler, AppOptions } from './app';
 import { closeDataSource } from './database/data-source';
 import { getConfig } from './config/env';
+import { container } from 'tsyringe';
+import { RetentionCron } from './core/logging/retention-cron';
+import { DEFAULT_RETENTION_DAYS } from './core/logging/traffic-logger';
 
 let server: ReturnType<Application['listen']> | null = null;
 
@@ -20,6 +23,10 @@ export async function startServer(options: AppOptions = {}): Promise<void> {
     console.log(`[Server] Listening on port ${config.server.port}`);
     console.log(`[Server] Environment: ${config.server.nodeEnv}`);
     console.log(`[Server] Docs: http://localhost:${config.server.port}/api-docs`);
+
+    // Start retention cron after server is up
+    const retentionCron = container.resolve(RetentionCron);
+    retentionCron.start(DEFAULT_RETENTION_DAYS);
   });
 
   // Graceful shutdown handlers
@@ -47,6 +54,14 @@ export async function startServer(options: AppOptions = {}): Promise<void> {
  * Stops the HTTP server and closes the database connection.
  */
 export async function stopServer(): Promise<void> {
+  // Stop retention cron
+  try {
+    const retentionCron = container.resolve(RetentionCron);
+    retentionCron.stop();
+  } catch {
+    // Container may not be configured in test environments
+  }
+
   if (server) {
     server.close((err) => {
       if (err) {
