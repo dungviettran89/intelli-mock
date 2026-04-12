@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~94% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅) |
+| **Overall Completion** | ~95% (Phase 6: Web UI 🟡 In Progress, CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅) |
 | **Current Phase** | Phase 6: Web UI 🟡 In Progress |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 55 implemented / ~17+ planned |
-| **Test Files** | 37 files (323 unit + 10 integration + 7 CLI E2E + 3 Playwright E2E), 347 tests total |
+| **Source Files** | 56 implemented / ~16+ planned |
+| **Test Files** | 38 files (323 unit + 10 integration + 15 CLI E2E + 3 Playwright E2E), 355 tests total |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
 ---
@@ -26,7 +26,7 @@
 | **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
 | **Phase 6** | Web UI | 4/6 items | 🟡 In Progress |
 | **Phase 7** | Polish | 0/4 items | ⬜ Not Started |
-| **CLI Application** | Start Command + E2E Tests | 6/6 items | ✅ Complete |
+| **CLI Application** | Start + Init Commands + E2E Tests | 7/7 items | ✅ Complete |
 
 ---
 
@@ -182,8 +182,8 @@
 | **Config loader** (CLI flags > env vars > defaults) | `apps/intelli-mock/src/config.ts` | ✅ Done |
 | **UI static file serving** | `packages/intelli-mock-core/src/app.ts` | ✅ Done |
 | **Default dev tenant** (when auth disabled) | `packages/intelli-mock-core/src/core/auth/jwt.middleware.ts` | ✅ Done |
-| **CLI E2E tests** (7 tests, 9.5s) | `apps/intelli-mock/test/e2e/*.test.ts` | ✅ Done |
-| **`init` command** | `apps/intelli-mock/src/commands/init.ts` | ⬜ Not Started |
+| **CLI E2E tests** (15 tests, 29.5s) | `apps/intelli-mock/test/e2e/*.test.ts` | ✅ Done |
+| **`init` command** (config file generation) | `apps/intelli-mock/src/commands/init.ts` | ✅ Done |
 
 ---
 
@@ -192,7 +192,7 @@
 | Package | Path | Status | Source Files | Test Files |
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API) | 36 | 29 (27 unit + 2 integration) |
-| **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start command + E2E tests complete) | 3 | 3 (7 E2E tests) |
+| **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
 | **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅) | 5 | 0 |
 
 ---
@@ -222,7 +222,7 @@
 | 17 | Web UI: mock list, detail, script editor, samples | 🟡 Partial (package scaffolded, mock list, detail, script editor done) |
 | 18 | Swagger/OpenAPI documentation at `/api-docs` | ⬜ Not Started |
 | 19 | Traffic log viewer with 1-month retention | 🟡 Partial (API done, UI not started) |
-| 20 | CLI application with `start` command | ✅ Done (start command complete, init command pending) |
+| 20 | CLI application with `start` and `init` commands | ✅ Done (both commands complete with E2E tests) |
 
 ### Non-Functional Requirements (4/8 complete)
 
@@ -305,3 +305,4 @@
 | [TODO-015](tasks/done/TODO-2026-04-11-004.md) | 2026-04-11 | Phase 6: Web UI — Package Scaffold + Mock List Component |
 | [TODO-016](tasks/done/TODO-2026-04-12-003.md) | 2026-04-12 | Phase 6: Web UI — Script Editor (CodeMirror 6) |
 | [TODO-017](tasks/done/TODO-2026-04-12-004.md) | 2026-04-12 | Traffic Log API (`/api/traffic`) — REST endpoint + controller |
+| [TODO-018](tasks/done/TODO-2026-04-12-005.md) | 2026-04-12 | CLI `init` Command — Config File Generation (8 new E2E tests, 355 total) |
