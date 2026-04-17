@@ -19,6 +19,7 @@ When making architectural or feature decisions, update **all relevant docs**:
 - **`docs/DATABASE.md`** — Schema changes, migrations, data model updates
 - **`docs/API.md`** — New endpoints, request/response formats
 - **`docs/TESTING.md`** — New test categories, mocking strategies, test file checklist updates
+- **`docs/UI.md`** — UI components, layout, design system tokens, branding
 
 ## ⚠️ CRITICAL CONSTRAINT: Docs-Only Writes
 

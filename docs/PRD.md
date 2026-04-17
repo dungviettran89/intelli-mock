@@ -15,7 +15,7 @@ Teams building frontend applications often depend on backend APIs that are incom
 - Generate AI-powered mock scripts from sample request/response pairs (minimum 5 samples)
 - Offer full offline-first testing infrastructure — all unit tests run without external services
 - Support proxy-to-real-API fallback with automatic traffic capture
-- Deliver a thin, standards-based Web UI (Lit Element + Material Web)
+- Deliver a thin, standards-based Web UI with all major functions (mock list, detail, script editor, sample pairs, try-it, traffic logs, settings)
 
 ## Non-Goals
 
@@ -36,31 +36,31 @@ Teams building frontend applications often depend on backend APIs that are incom
 - [x] TenantResolver service with upsert logic for tenant and user
 - [x] Six entity models: Tenant, User, MockEndpoint, SamplePair, MockScript, TrafficLog
 - [x] Database migration system with initial schema
-- [ ] Unit testing framework with 100% offline, fully mocked tests (see `docs/TESTING.md`)
-- [ ] REST API for mock endpoint management (CRUD)
-- [ ] Route matcher with longest-match algorithm and wildcard support
-- [ ] Sample pair management API
-- [ ] AI script generation via Vercel AI SDK (minimum 5 samples)
-- [ ] Script versioning and activation
-- [ ] vm2 sandbox for isolated mock script execution
-- [ ] Proxy module for HTTP forwarding with configurable timeout
-- [ ] Auto-endpoint: proxy first → fallback to mock
-- [ ] Web UI: mock list, detail view, script editor (CodeMirror 6), sample management
-- [ ] Swagger/OpenAPI documentation served at `/api-docs`
-- [ ] Traffic log viewer with 1-month retention policy
-- [ ] CLI application with `start` and `init` commands
-- [ ] CLI auth configuration: `--no-auth` flag to disable JWT, `--auth-key` to provide JWT public key, `--auth-issuer`, `--auth-algorithm`
+- [x] Unit testing framework with 100% offline, fully mocked tests (see `docs/TESTING.md`)
+- [x] REST API for mock endpoint management (CRUD)
+- [x] Route matcher with longest-match algorithm and wildcard support
+- [x] Sample pair management API
+- [x] AI script generation via Vercel AI SDK (minimum 5 samples)
+- [x] Script versioning and activation
+- [x] vm2 sandbox for isolated mock script execution
+- [x] Proxy module for HTTP forwarding with configurable timeout
+- [x] Auto-endpoint: proxy first → fallback to mock
+- [x] Web UI: mock list, detail view, script editor (CodeMirror 6), sample management, try-it panel, traffic logs, settings
+- [x] Swagger/OpenAPI documentation served at `/api-docs`
+- [x] Traffic log viewer with 1-month retention policy
+- [x] CLI application with `start` and `init` commands
+- [x] CLI auth configuration: `--no-auth` flag to disable JWT, `--auth-key` to provide JWT public key, `--auth-issuer`, `--auth-algorithm`
 
 ### Non-Functional
 
 - [x] TypeScript strict mode across all packages
-- [ ] Unit test coverage thresholds: 80% lines, 75% branches, 80% functions
-- [ ] Full test suite executes in < 10 seconds
-- [ ] No cross-tenant data leakage — every query scoped by `tenantId`
-- [ ] vm2 sandbox isolation — no filesystem or OS access
-- [ ] Configurable proxy timeout (default 30s)
-- [ ] Graceful server shutdown on SIGTERM/SIGINT
-- [ ] pnpm workspace monorepo with composite TypeScript builds
+- [x] Unit test coverage thresholds: 80% lines, 75% branches, 80% functions
+- [x] Full test suite executes in < 10 seconds
+- [x] No cross-tenant data leakage — every query scoped by `tenantId`
+- [x] vm2 sandbox isolation — no filesystem or OS access
+- [x] Configurable proxy timeout (default 30s)
+- [x] Graceful server shutdown on SIGTERM/SIGINT
+- [x] pnpm workspace monorepo with composite TypeScript builds
 
 ## User Stories
 
@@ -70,6 +70,8 @@ Teams building frontend applications often depend on backend APIs that are incom
 4. As a **user**, I want AI-generated mock scripts so that I don't have to write mock handlers manually
 5. As a **user**, I want to see all traffic logs so that I can inspect what requests were made
 6. As a **developer**, I want to run the full test suite offline so that CI doesn't depend on external services
+7. As a **user**, I want a settings page so that I can configure tenant, auth, and AI settings
+8. As a **user**, I want the try-it panel so that I can test mock endpoints directly from the UI
 
 ## Success Metrics
 
@@ -102,40 +104,71 @@ All tests are **100% offline and fully mocked**. See [`docs/TESTING.md`](./TESTI
 - [x] Testing architecture documented
 
 ### Phase 2: Mock CRUD + Matching
-- [ ] REST API for mock endpoint management
-- [ ] Route matcher (longest match, wildcard)
-- [ ] Sample management API
-- [ ] Unit tests for all new code
+- [x] REST API for mock endpoint management
+- [x] Route matcher (longest match, wildcard)
+- [x] Sample management API
+- [x] Unit tests for all new code
 
 ### Phase 3: AI Engine
-- [ ] Vercel AI SDK integration
-- [ ] Local Ollama OpenAI-compatible endpoint for development (`http://localhost:11434/v1`)
-- [ ] Default model for dev/testing: `gemma4:31b-cloud`
-- [ ] Prompt engineering for script generation
-- [ ] Script versioning
-- [ ] Syntax validation
+- [x] Vercel AI SDK integration
+- [x] Local Ollama OpenAI-compatible endpoint for development (`http://localhost:11434/v1`)
+- [x] Default model for dev/testing: `gemma4:31b-cloud`
+- [x] Prompt engineering for script generation
+- [x] Script versioning
+- [x] Syntax validation
 
 ### Phase 4: vm2 Sandbox
-- [ ] Sandboxed script execution
-- [ ] Test/try endpoint
-- [ ] Request/response context injection
+- [x] Sandboxed script execution
+- [x] Test/try endpoint
+- [x] Request/response context injection
 
 ### Phase 5: Proxy Module
-- [ ] HTTP forwarding with timeout
-- [ ] Automatic traffic capture
-- [ ] Auto-endpoint (proxy → fallback)
+- [x] HTTP forwarding with timeout
+- [x] Automatic traffic capture
+- [x] Auto-endpoint (proxy → fallback)
 
 ### Phase 6: Web UI
-- [ ] Lit Element + Material Web skeleton
-- [ ] CodeMirror 6 script editor
-- [ ] Mock list/detail views
-- [ ] Sample management UI
-- [ ] Try-it panel
-- [ ] Traffic log viewer
+- [x] Lit Element + Material Web skeleton
+- [x] CodeMirror 6 script editor
+- [x] Mock list view with filtering/sorting
+- [x] Mock detail view with endpoint config
+- [x] Sample management UI (CRUD pairs)
+- [x] Try-it panel (live request testing)
+- [x] Traffic log viewer with filtering
+- [ ] Settings page (tenant, auth)
+- [ ] Playwright E2E test suite
 
-### Phase 7: Polish
-- [ ] Swagger/OpenAPI docs
-- [ ] Traffic log retention cron
+## UI Requirements
+
+All major functions MUST have a corresponding UI component in `@intelli-mock/ui`:
+
+| Function | UI Component | Features |
+|---|---|---|
+| Mock endpoint list | `<mock-list>` | Table view, search, filter by method/path, sort |
+| Mock endpoint detail | `<mock-detail>` | Route config, method, active script, activation toggle |
+| Script editor | `<script-editor>` | CodeMirror 6, syntax highlighting, version selector, save/activate |
+| Sample pair management | `<sample-editor>` | Request/response pair CRUD, JSON editor, pair deletion |
+| Try-it testing | `<try-it-panel>` | Method selector, path input, headers, body, send, response display |
+| Traffic log viewer | `<traffic-log-viewer>` | Table with timestamp, path, method, status, mock hit, expand for details |
+| Settings | `<settings-panel>` | Tenant info, auth config, AI endpoint, proxy settings |
+
+### Visual Design & Layout
+
+- **Layout Structure**: 
+    - **Sidebar Navigation**: Fixed left-side navigation for primary app sections (Mocks, Traffic, Settings).
+    - **Header**: Top bar with tenant info, user profile, and current view title.
+    - **Main Content**: Large white background area for lists, editors, and detail views.
+- **Color Palette**:
+    - **Primary**: Red (Signal/Action color).
+    - **Secondary/Text**: Black (High contrast).
+    - **Background**: White (Clean, minimal).
+    - **Accents**: Subtle grays for borders and inactive states.
+- **Typography**: Clean, sans-serif font (standard Material Design recommendation).
+- **Interactive Elements**: Material Design 3 (M3) components (buttons, text fields, cards) customized with the red/black/white theme.
+
+## Phase 7: Polish
+- [x] Swagger/OpenAPI docs
+- [x] Traffic log retention cron
 - [ ] Docker image
 - [ ] CI/CD pipeline
 

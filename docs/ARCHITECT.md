@@ -66,8 +66,10 @@ AI-powered API mocking platform for teams. Users provide sample requests/respons
 | **Script Execution** | vm2 sandbox | Isolated execution, no filesystem/OS access |
 | **Auth** | JWT middleware | Token passed via Bearer header from upstream proxy |
 | **Code Editing** | CodeMirror 6 | Syntax-highlighted mock script editor |
-| **Web UI** | Lit Element + `@material/web` | Material 3 web components, thin UI |
+| Web UI | Lit Element + `@material/web` | Material 3 web components, thin UI |
+| **UI Design** | Red + Black on White | Left-side navigation, minimal design |
 | **API Docs** | Swagger / OpenAPI 3.0 | Served at `/api-docs` |
+
 | **Testing** | Vitest + supertest | 100% offline, fully mocked unit tests |
 | **E2E UI Testing** | Playwright | Browser-based validation of Lit Element + Material Web |
 | **Mocking** | Vitest built-in + ts-mockito | Type-safe mocks, vi.mock(), vi.fn() |
@@ -474,6 +476,21 @@ The `intelli-mock start` command supports flags that override env vars for auth 
 | `-p, --port <n>` | `PORT` | `3000` | Server listen port |
 
 **Precedence:** CLI flags > env vars > defaults.
+
+## UI Design & Branding
+
+- **Layout Strategy**:
+    - **App Shell**: A fixed sidebar on the left for navigation, a top header for context, and a main scrolling area for content.
+    - **Navigation**: Uses Material Design 3 `md-navigation-drawer` or custom sidebar with `md-list-item` for navigation links.
+- **Theme**:
+    - **Colors**:
+        - `primary`: Red (specifically a bold red like `#D32F2F` or similar)
+        - `on-primary`: White
+        - `surface`: White
+        - `on-surface`: Black
+        - `outline`: Black/Gray
+    - **Style**: Minimalist, high-contrast, leveraging white space.
+- **Components**: Standard `@material/web` components, themed via CSS custom properties (Design Tokens).
 
 ## Local AI Development with Ollama
 
