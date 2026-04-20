@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Intelli-Mock | Mocks</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#1b1b1b",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#e4e2e2",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "on-tertiary-fixed-variant": "#464747",
+                    "tertiary": "#585858",
+                    "inverse-primary": "#ffb3ac",
+                    "surface-tint": "#ba1a20",
+                    "primary-container": "#d32f2f",
+                    "primary": "#af101a",
+                    "surface-bright": "#f9f9f9",
+                    "on-primary-fixed-variant": "#930010",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#e4beba",
+                    "surface-container-low": "#f3f3f3",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#f9f9f9",
+                    "on-background": "#1b1b1b",
+                    "inverse-surface": "#303030",
+                    "primary-fixed-dim": "#ffb3ac",
+                    "background": "#f9f9f9",
+                    "outline": "#8f6f6c",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#e8e8e8",
+                    "on-primary-container": "#fff2f0",
+                    "inverse-on-surface": "#f1f1f1",
+                    "on-tertiary-container": "#f7f5f4",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "secondary-container": "#e2dfde",
+                    "tertiary-container": "#707070",
+                    "primary-fixed": "#ffdad6",
+                    "surface-dim": "#dadada",
+                    "on-secondary-container": "#636262",
+                    "secondary": "#5f5e5e",
+                    "surface-variant": "#e2e2e2",
+                    "on-secondary-fixed-variant": "#474746",
+                    "surface-container": "#eeeeee",
+                    "on-surface-variant": "#5b403d",
+                    "tertiary-fixed-dim": "#c7c6c6",
+                    "on-primary-fixed": "#410003"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(249, 249, 249, 0.85);
+            backdrop-filter: blur(20px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #af101a 0%, #d32f2f 100%);
+        }
+        .tonal-transition {
+            transition: background-color 0.2s ease;
+        }
+        /* Custom scrollbar for technical look */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #303030; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#303030] flex flex-col z-50 overflow-hidden">
+<!-- Brand Header -->
+<div class="p-8 pb-12">
+<h1 class="text-2xl font-black text-[#D32F2F] tracking-tighter font-headline">Intelli-Mock</h1>
+<p class="font-['Space_Grotesk'] text-sm tracking-wide uppercase text-white/50 mt-1">Technical Editorial</p>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-grow space-y-1">
+<a class="flex items-center px-8 py-3 text-white font-bold border-l-4 border-[#D32F2F] bg-white/5 font-['Space_Grotesk'] text-sm tracking-wide uppercase transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="api">api</span>
+                Mocks
+            </a>
+<a class="flex items-center px-8 py-3 text-white/70 hover:text-white hover:bg-white/10 font-['Space_Grotesk'] text-sm tracking-wide uppercase transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="analytics">analytics</span>
+                Traffic
+            </a>
+<a class="flex items-center px-8 py-3 text-white/70 hover:text-white hover:bg-white/10 font-['Space_Grotesk'] text-sm tracking-wide uppercase transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<!-- CTA Action -->
+<div class="px-6 py-8">
+<button class="w-full py-3 primary-gradient text-white font-['Space_Grotesk'] font-bold uppercase tracking-widest text-xs rounded-lg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/20">
+                New Mock
+            </button>
+</div>
+<!-- Footer Links -->
+<div class="mt-auto border-t border-white/5 pb-8 pt-4">
+<a class="flex items-center px-8 py-2 text-white/50 hover:text-white font-['Space_Grotesk'] text-xs uppercase tracking-wider transition-all" href="#">
+<span class="material-symbols-outlined mr-4 text-sm" data-icon="help_outline">help_outline</span>
+                Help
+            </a>
+<a class="flex items-center px-8 py-2 text-white/50 hover:text-white font-['Space_Grotesk'] text-xs uppercase tracking-wider transition-all" href="#">
+<span class="material-symbols-outlined mr-4 text-sm" data-icon="description">description</span>
+                Documentation
+            </a>
+</div>
+</aside>
+<!-- Main App Container -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar Shell -->
+<header class="bg-[#f9f9f9]/85 backdrop-blur-md sticky top-0 z-40 h-16 flex justify-between items-center w-full px-8 border-b-0">
+<div class="flex items-center gap-4 text-sm font-['Inter'] font-medium">
+<span class="text-on-surface/40">Mocks</span>
+<span class="material-symbols-outlined text-xs text-on-surface/20" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface border-b-2 border-[#D32F2F] pb-1">Endpoint Explorer</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-high rounded text-xs font-['Space_Grotesk'] font-medium">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    Tenant: Production
+                </div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-on-surface/60 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface/60 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+</button>
+<div class="h-8 w-8 bg-inverse-surface rounded-full flex items-center justify-center overflow-hidden">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Professional headshot of a software architect in a minimalist workspace with soft daylight filtering through" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxsysKK9w1iQinLbJAFjpVhYtYM-jhqX0Yx6CZbzCx-BHWu6U5bN9VXUS8IyMLDZ4oiJfD3JIfOjmE8nq0ws-1lWn3VpjmZGG2K3jfmair6xEzcom-3fUK1t0N9ciOpGOmaSoXjP3cWczLdkc5pMnDiyBgNFA5v10lkwIhhhkKDhtffHFm14Jn1bsL15v0VLTO-dj1yCqtTk748s7syD15cB6DCJmQ6ekJklwzHnnbKwNODJ6zfwM6jZk35oxqU9K68RwRpArvpCE"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<section class="p-8 flex-grow">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-4xl font-black font-headline tracking-tighter text-on-surface mb-2">Endpoint Registry</h2>
+<p class="text-on-surface/60 max-w-xl">Manage your virtualized API layer. Precision-engineered responses for high-fidelity technical testing.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 primary-gradient text-white font-['Space_Grotesk'] font-bold uppercase tracking-widest text-sm rounded-lg hover:scale-[1.02] transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    Create New Mock
+                </button>
+</div>
+<!-- Search & Filtering Shell -->
+<div class="mb-10">
+<div class="relative group max-w-2xl">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface/40 group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 pl-12 pr-4 py-4 text-on-surface placeholder:text-on-surface/30 font-body transition-all" placeholder="Filter by path or method..." type="text"/>
+</div>
+</div>
+<!-- Endpoint Table / Grid -->
+<div class="space-y-4">
+<!-- Header Row (Hidden on mobile, stylized for web) -->
+<div class="grid grid-cols-12 px-6 py-2 text-[10px] uppercase tracking-[0.2em] font-['Space_Grotesk'] font-bold text-on-surface/40">
+<div class="col-span-1">Method</div>
+<div class="col-span-5">Endpoint Path</div>
+<div class="col-span-2">Status</div>
+<div class="col-span-2">Latency</div>
+<div class="col-span-2 text-right">Actions</div>
+</div>
+<!-- Endpoint Item 1 -->
+<div class="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-lg group hover:bg-surface-container-low transition-all duration-300 border-l-4 border-transparent hover:border-primary">
+<div class="col-span-1">
+<span class="px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-black font-['Space_Grotesk'] rounded">GET</span>
+</div>
+<div class="col-span-5 flex items-center gap-3">
+<code class="text-sm font-semibold text-on-surface">/api/v1/users</code>
+<span class="material-symbols-outlined text-xs text-on-surface/20" data-icon="content_copy">content_copy</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                            Active
+                        </span>
+</div>
+<div class="col-span-2 text-sm text-on-surface/40 font-['Space_Grotesk']">
+                        124ms
+                    </div>
+<div class="col-span-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors text-on-surface/60 hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded transition-colors text-on-surface/60 hover:text-error">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Endpoint Item 2 -->
+<div class="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-lg group hover:bg-surface-container-low transition-all duration-300 border-l-4 border-transparent hover:border-primary">
+<div class="col-span-1">
+<span class="px-2 py-1 bg-green-100 text-green-700 text-[10px] font-black font-['Space_Grotesk'] rounded">POST</span>
+</div>
+<div class="col-span-5 flex items-center gap-3">
+<code class="text-sm font-semibold text-on-surface">/api/v1/orders/:id</code>
+<span class="material-symbols-outlined text-xs text-on-surface/20" data-icon="content_copy">content_copy</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-high text-on-surface/50 text-[10px] font-bold uppercase tracking-wider rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface/30"></span>
+                            Draft
+                        </span>
+</div>
+<div class="col-span-2 text-sm text-on-surface/40 font-['Space_Grotesk']">
+                        --
+                    </div>
+<div class="col-span-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors text-on-surface/60 hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded transition-colors text-on-surface/60 hover:text-error">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Endpoint Item 3 -->
+<div class="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-lg group hover:bg-surface-container-low transition-all duration-300 border-l-4 border-transparent hover:border-primary">
+<div class="col-span-1">
+<span class="px-2 py-1 bg-red-100 text-red-700 text-[10px] font-black font-['Space_Grotesk'] rounded">DELETE</span>
+</div>
+<div class="col-span-5 flex items-center gap-3">
+<code class="text-sm font-semibold text-on-surface">/api/v1/session/logout</code>
+<span class="material-symbols-outlined text-xs text-on-surface/20" data-icon="content_copy">content_copy</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                            Active
+                        </span>
+</div>
+<div class="col-span-2 text-sm text-on-surface/40 font-['Space_Grotesk']">
+                        45ms
+                    </div>
+<div class="col-span-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors text-on-surface/60 hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded transition-colors text-on-surface/60 hover:text-error">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Empty State Ghost -->
+<div class="border-2 border-dashed border-on-surface/5 p-12 flex flex-col items-center justify-center rounded-xl opacity-40 hover:opacity-100 transition-opacity cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-4 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</div>
+<p class="font-['Space_Grotesk'] font-bold uppercase tracking-widest text-xs">Register New Endpoint Architecture</p>
+</div>
+</div>
+</section>
+<!-- Contextual Insight Footer -->
+<footer class="p-8 mt-auto border-t border-surface-container-high">
+<div class="flex items-center gap-8 text-[10px] uppercase font-['Space_Grotesk'] font-bold tracking-widest text-on-surface/30">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                    Total Mocks: 42
+                </div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    Hits (24h): 1.2M
+                </div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    Uptime: 99.99%
+                </div>
+<div class="ml-auto flex gap-4">
+<a class="hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="hover:text-primary transition-colors" href="#">System Status</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- FAB for quick creation (hidden on Desktop usually but allowed by intent) -->
+<button class="md:hidden fixed bottom-8 right-8 w-14 h-14 primary-gradient text-white rounded-full shadow-2xl flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</body></html>

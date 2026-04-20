@@ -15,36 +15,42 @@ export class MockList extends LitElement {
   static override styles = css`
     :host {
       display: block;
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 24px 16px;
+      padding: 48px;
     }
 
-    .header {
+    .page-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      align-items: flex-end;
+      margin-bottom: 48px;
     }
 
-    .header h1 {
-      font-size: 24px;
-      font-weight: 500;
+    .page-header h2 {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.05em;
       margin: 0;
+    }
+
+    .page-header p {
+      color: rgba(0, 0, 0, 0.4);
+      margin: 8px 0 0 0;
     }
 
     .empty {
       text-align: center;
-      padding: 48px 16px;
+      padding: 80px 16px;
+      border: 2px dashed rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
       color: #666;
     }
 
     .error {
-      color: #b3261e;
-      padding: 16px;
-      background: #f9dedc;
+      color: #ba1a1a;
+      padding: 24px;
+      background: #ffdad6;
       border-radius: 8px;
-      margin: 16px 0;
+      margin-bottom: 32px;
     }
 
     .method-badge {
@@ -139,10 +145,7 @@ export class MockList extends LitElement {
   override render() {
     if (this._loading) {
       return html`
-        <div class="header">
-          <h1>Intelli-Mock</h1>
-        </div>
-        <div style="display:flex;justify-content:center;padding:48px;">
+        <div style="display:flex;justify-content:center;padding:120px;">
           <md-circular-progress indeterminate></md-circular-progress>
         </div>
       `;
@@ -150,30 +153,34 @@ export class MockList extends LitElement {
 
     if (this._error) {
       return html`
-        <div class="header">
-          <h1>Intelli-Mock</h1>
-        </div>
         <div class="error">${this._error}</div>
       `;
     }
 
     if (this._mocks.length === 0) {
       return html`
-        <div class="header">
-          <h1>Intelli-Mock</h1>
+        <div class="page-header">
+          <div>
+            <h2>Endpoint Registry</h2>
+            <p>No active mock architectures detected.</p>
+          </div>
         </div>
         <div class="empty">
-          <md-icon style="font-size:48px;width:48px;height:48px;">code</md-icon>
-          <p>No mock endpoints yet.</p>
-          <p>Create your first mock to get started.</p>
+          <md-icon style="font-size:48px;width:48px;height:48px;opacity:0.2;">code</md-icon>
+          <p style="font-family:'Space Grotesk';text-transform:uppercase;font-weight:700;font-size:12px;letter-spacing:0.1em;margin-top:24px;">Initialize New Virtual Layer</p>
         </div>
       `;
     }
 
     return html`
-      <div class="header">
-        <h1>Intelli-Mock</h1>
-        <span style="color:#666;">${this._mocks.length} mock${this._mocks.length !== 1 ? 's' : ''}</span>
+      <div class="page-header">
+        <div>
+          <h2>Endpoint Registry</h2>
+          <p>Manage your virtualized API layer. Precision-engineered responses.</p>
+        </div>
+        <div style="font-family:'Space Grotesk';font-weight:700;font-size:12px;color:rgba(0,0,0,0.3);text-transform:uppercase;">
+          Active Architectures: ${this._mocks.length}
+        </div>
       </div>
       <md-list>
         ${this._mocks.map(

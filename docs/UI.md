@@ -3,6 +3,14 @@
 ## Overview
 Intelli-Mock's Web UI is a thin, standards-based interface built with **Lit Element** and **Material Web Components (M3)**. The design philosophy is minimalist, high-contrast, and focused on developer productivity.
 
+## Mockups
+Interactive HTML mockups for the core UI components are available in the [docs/mockups](./mockups/) directory:
+
+- [Mock Endpoints List View](./mockups/mock-endpoints.html)
+- [Mock Detail & Editor (with AI)](./mockups/mock-ai-generator.html)
+- [Traffic Log Viewer](./mockups/mock-details.html)
+- [Settings Page](./mockups/settings.html)
+
 ## Branding & Visual Identity
 - **Color Palette**:
     - **Primary**: Red (`#D32F2F`) - Used for primary actions, active states, and branding.
@@ -41,7 +49,7 @@ The application follows a standard **App Shell** pattern:
 ## Component & Page Specifications
 
 ### 1. Mock Endpoint List View (`<mock-list>`)
-*Main dashboard for managing all mocks within the current tenant.*
+*Main dashboard for managing all mocks within the current tenant. See [Mockup](./mockups/mock-endpoints.html).*
 
 - **Header Section**:
     - **Search Bar**: Centered `md-outlined-text-field` with "Filter by path or method..."
@@ -56,7 +64,7 @@ The application follows a standard **App Shell** pattern:
     - **Row Actions**: IconButton for "Edit" (leads to Detail View) and "Delete" (triggers confirmation dialog).
 
 ### 2. Mock Detail & Editor View (`<mock-detail>`)
-*Comprehensive editor for a single mock endpoint, including configuration and script management.*
+*Comprehensive editor for a single mock endpoint, including configuration and script management. See [Mockup](./mockups/mock-ai-generator.html).*
 
 - **Navigation**: "Back to List" button in the top-left header.
 - **Left Column / Top Section (Configuration)**:
@@ -73,7 +81,9 @@ The application follows a standard **App Shell** pattern:
         - Integrated `<try-it-panel>` for testing the current active script.
 
 ### 3. AI Script Generation Experience
-*The workflow for transforming samples into a functional mock.*
+*The workflow for transforming samples into a functional mock. See [Mockup](./mockups/mock-ai-generator.html).*
+
+- **AI Assistant Button**: A floating action button (FAB) available in the editor to trigger the AI chat/assistant for script modifications or explanations.
 
 - **Trigger**: The "Generate with AI" button in the Script Editor tab.
 - **Validation**: If < 5 samples, show a tooltip or disabled state explaining the requirement.
@@ -102,7 +112,7 @@ The application follows a standard **App Shell** pattern:
     - Formatted JSON output with "Copy to Clipboard" button.
 
 ### 6. Traffic Log Viewer (`<traffic-log-viewer>`)
-*Audit trail and debugging tool for all incoming traffic.*
+*Audit trail and debugging tool for all incoming traffic. See [Mockup](./mockups/mock-details.html).*
 
 - **Filter Bar**: Filter by Method, Status Code, and "Mock Hit" vs "Proxy Pass-through".
 - **Log Table**:
@@ -113,6 +123,7 @@ The application follows a standard **App Shell** pattern:
     - Button: "Save as Sample" (to quickly promote real traffic to a mock sample).
 
 ### 7. Settings Page (`<settings-panel>`)
+*Global and tenant-level configuration. See [Mockup](./mockups/settings.html).*
 - **Tenant Section**: View Slug, Name, and total usage metrics.
 - **Auth Section**: Display JWT Issuer and Algorithm used by the instance.
 - **AI Config**: Configure the Ollama/OpenAI endpoint and model being used.

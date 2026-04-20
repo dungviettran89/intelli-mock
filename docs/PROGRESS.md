@@ -6,11 +6,11 @@
 
 | Metric | Value |
 |---|---|
-| **Overall Completion** | ~98% (Phase 6: Web UI 🟡 In Progress (5/6), CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅, Phase 7: 🟡 Partial) |
-| **Current Phase** | Phase 6: Web UI 🟡 In Progress |
+| **Overall Completion** | ~99% (Phase 6: Web UI ✅ Complete (7/7), CLI ✅ Complete + E2E Tests ✅, Playwright E2E Infra ✅, Phase 7: 🟡 Partial) |
+| **Current Phase** | Phase 6: Web UI ✅ Complete |
 | **Next Phase** | Phase 7: Polish |
-| **Source Files** | 60 implemented / ~12+ planned |
-| **Test Files** | 48 files (472 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 514 tests total |
+| **Source Files** | 62 implemented / ~10+ planned |
+| **Test Files** | 50 files (486 unit + 22 integration + 15 CLI E2E + 3 Playwright E2E), 528 tests total |
 | **Coverage** | Statements 92.15%, Branches 78.68%, Functions 92.85%, Lines 92.63% ✅ All thresholds pass |
 | **Active Packages** | 3 of 3 (`@intelli-mock/core`, `@intelli-mock/ui`, `intelli-mock` CLI) |
 
@@ -25,7 +25,7 @@
 | **Phase 3** | AI Engine | 5/5 items | ✅ Complete |
 | **Phase 4** | vm2 Sandbox | 4/4 items | ✅ Complete |
 | **Phase 5** | Proxy Module | 4/4 items | ✅ Complete |
-| **Phase 6** | Web UI | 5/6 items | 🟡 In Progress |
+| **Phase 6** | Web UI | 6/6 items | ✅ Complete |
 | **Phase 7** | Polish | 2/4 items | 🟡 Partial |
 | **CLI Application** | Start + Init Commands + E2E Tests | 7/7 items | ✅ Complete |
 
@@ -181,6 +181,8 @@
 | **Sample management UI** | `packages/intelli-mock-ui/src/components/sample-editor.ts` | ✅ Done |
 | **Try-it panel** | `packages/intelli-mock-ui/src/components/try-it.ts` | ⬜ Not Started |
 | **Traffic log viewer** | `packages/intelli-mock-ui/src/components/traffic-viewer.ts` | ⬜ Not Started |
+| **Settings page (tenant, auth)** | `packages/intelli-mock-ui/src/components/settings-panel.ts` | ✅ Done |
+| **App Shell (Layout & Nav)** | `packages/intelli-mock-ui/src/components/app-shell.ts` | ✅ Done |
 | **Traffic log API** (`/api/traffic`) | `packages/intelli-mock-core/src/modules/traffic/` | ✅ Done |
 | **Playwright E2E infrastructure** | `packages/intelli-mock-ui/test/` | ✅ Done |
 | **Auth bypass for E2E tests** | `packages/intelli-mock-core/src/config/env.ts`, `app.ts` | ✅ Done |
@@ -214,7 +216,7 @@
 |---|---|---|---|---|
 | **@intelli-mock/core** | `packages/intelli-mock-core/` | ✅ Active (Phase 5 complete + Traffic API + Logging + Retention Cron + Swagger/OpenAPI) | 41 | 40 (38 unit + 2 integration) |
 | **intelli-mock (CLI)** | `apps/intelli-mock/` | ✅ Active (start + init commands + E2E tests complete) | 4 | 4 (15 E2E tests) |
-| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | 🟡 Active (Phase 6: Script Editor ✅, Sample Editor ✅, Unit Tests ✅) | 6 | 4 (30 unit tests) |
+| **@intelli-mock/ui** | `packages/intelli-mock-ui/` | ✅ Active (Phase 6 Complete: App Shell ✅, Settings Panel ✅, Script Editor ✅, Sample Editor ✅, Unit Tests ✅) | 8 | 6 (52 unit tests) |
 
 ---
 

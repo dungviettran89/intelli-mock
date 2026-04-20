@@ -58,9 +58,9 @@ describe('MockList component', () => {
     expect(element).toBeDefined();
   });
 
-  it('should show loading state initially', async () => {
+  it('should show header state initially', async () => {
     await waitForRender();
-    expect(element.shadowRoot?.textContent).toContain('Intelli-Mock');
+    expect(element.shadowRoot?.textContent).toContain('Endpoint Registry');
   });
 
   it('should fetch mocks on connected', async () => {
@@ -75,7 +75,7 @@ describe('MockList component', () => {
     const shadowRoot = element.shadowRoot!;
     expect(shadowRoot.textContent).toContain('/api/users');
     expect(shadowRoot.textContent).toContain('/api/posts');
-    expect(shadowRoot.textContent).toContain('2 mocks');
+    expect(shadowRoot.textContent).toContain('Active Architectures: 2');
   });
 
   it('should display method badges with correct classes', async () => {
